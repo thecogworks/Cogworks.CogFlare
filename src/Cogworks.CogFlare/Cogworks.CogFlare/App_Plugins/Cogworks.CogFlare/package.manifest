@@ -1,0 +1,23 @@
+{
+  "id": "Cogworks.CogFlare.Web",
+  "name": "Cogworks.CogFlare.Web",
+  "allowPackageTelemetry": false,
+  "dashboards": [
+    {
+      "alias": "CogFlare",
+      "view": "/App_Plugins/Cogworks.CogFlare/cogflare.html",
+      "sections": [ "settings" ],
+      "weight": 100,
+      "access": [
+        { "grant": "admin" }
+      ]
+    }
+  ],
+  "javascript": [
+    "~/App_Plugins/Cogworks.CogFlare/cogflare.controller.js",
+    "~/App_Plugins/Cogworks.CogFlare/cogflare.resources.js"
+  ],
+  "css": [
+    "~/App_Plugins/Cogworks.CogFlare/cogflare.css"
+  ]
+}
