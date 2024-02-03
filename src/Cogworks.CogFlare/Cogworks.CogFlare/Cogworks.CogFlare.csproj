@@ -18,6 +18,8 @@
     <PackageIcon>cogflare.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/thecogworks/Cogworks.CogFlare</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thecogworks/Cogworks.CogFlare</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

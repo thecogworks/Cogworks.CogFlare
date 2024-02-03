@@ -13,6 +13,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>cogflare.png</PackageIcon>
     <Version>1.2.4</Version>
+    <PackageProjectUrl>https://github.com/thecogworks/Cogworks.CogFlare</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/thecogworks/Cogworks.CogFlare</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
