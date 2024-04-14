@@ -47,8 +47,8 @@ namespace Cogworks.CogFlare.Core.Middlewares
 
                 if (currentNode != null)
                 {
-                    var disableCloudFlareCache = currentNode.HasProperty("disableCloudFlareCache") &&
-                                                 currentNode.Value<bool>("disableCloudFlareCache");
+                    var disableCloudFlareCache = currentNode.HasProperty(ApplicationConstants.DisableCloudFlareCache) &&
+                                                 currentNode.Value<bool>(ApplicationConstants.DisableCloudFlareCache);
 
                     var blockListPropertyAlias = _cogFlareSettings.BlockListPropertyAlias;
                     var formBlockAlias = _cogFlareSettings.FormBlockAlias;
