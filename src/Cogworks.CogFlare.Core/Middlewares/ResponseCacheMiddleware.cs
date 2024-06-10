@@ -22,7 +22,7 @@ namespace Cogworks.CogFlare.Core.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             var requestHost = context.Request.Host.Value.ToLower();
-            var UrlAddress = context.Request.Path.Value?.ToLower();
+            var urlAddress = context.Request.Path.Value?.ToLower();
             var domains = _domainService.GetAll(true) as IList<IDomain> ?? _domainService.GetAll(true).ToList();
             var domainRoutePrefixId = string.Empty;
             var domainLanguageIsoCode = string.Empty;
@@ -42,7 +42,7 @@ namespace Cogworks.CogFlare.Core.Middlewares
             using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
             {
                 var contentCache = umbracoContextReference.UmbracoContext.Content;
-                var currentNode = contentCache?.GetByRoute(domainRoutePrefixId + UrlAddress, false,
+                var currentNode = contentCache?.GetByRoute(domainRoutePrefixId + urlAddress, false,
                     culture: domainLanguageIsoCode);
 
                 if (currentNode != null)
