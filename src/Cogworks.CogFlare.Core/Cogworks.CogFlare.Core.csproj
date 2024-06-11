@@ -15,10 +15,22 @@
     <Version>1.2.4</Version>
     <PackageProjectUrl>https://github.com/thecogworks/Cogworks.CogFlare</PackageProjectUrl>
     <RepositoryUrl>https://github.com/thecogworks/Cogworks.CogFlare</RepositoryUrl>
+    <IncludeSymbols>False</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\cogflare.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

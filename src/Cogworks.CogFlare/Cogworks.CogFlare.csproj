@@ -38,6 +38,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\cogflare.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Cogworks.CogFlare.Core\Cogworks.CogFlare.Core.csproj" />
   </ItemGroup>
 
