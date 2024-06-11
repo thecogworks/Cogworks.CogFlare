@@ -34,6 +34,7 @@
     <None Remove="App_Plugins\Cogworks.CogFlare\cogflare.png" />
     <None Remove="App_Plugins\Cogworks.CogFlare\cogflare.resources.js" />
     <None Remove="App_Plugins\Cogworks.CogFlare\Lang\en-GB.xml" />
+    <None Remove="App_Plugins\Cogworks.CogFlare\Lang\en-US.xml" />
     <None Remove="App_Plugins\Cogworks.CogFlare\package.manifest" />
   </ItemGroup>
 
