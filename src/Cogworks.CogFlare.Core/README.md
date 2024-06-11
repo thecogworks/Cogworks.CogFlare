@@ -53,7 +53,8 @@ Add these settings to the **appsettings.json**
     "KeyNodes": "1234, 031089",
     "IsEnabled": true,
     "BlockListPropertyAlias": "",
-    "FormBlockAlias": ""
+    "FormBlockAlias": "",
+    "Domain": "https://www.example.com"
   }
 ```
 

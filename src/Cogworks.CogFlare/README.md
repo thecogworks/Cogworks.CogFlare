@@ -49,7 +49,8 @@ Add these settings to the **appsettings.json**
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "KeyNodes": "1234, 031089",
-    "IsEnabled": true
+    "IsEnabled": true,
+    "Domain": "https://www.example.com",
   }
 ```
 
