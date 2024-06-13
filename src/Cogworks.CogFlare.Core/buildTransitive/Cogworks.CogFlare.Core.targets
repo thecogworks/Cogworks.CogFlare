@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <CogworksCogFlareCoreContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\Cogworks.CogFlare.Core\**\*.*</CogworksCogFlareCoreContentFilesPath>
+  </PropertyGroup>
+
+  <Target Name="CopyCogworksCogFlareCoreAssets" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <CogworksCogFlareCoreContentFiles Include="$(CogworksCogFlareCoreContentFilesPath)" />
+    </ItemGroup>
+    <Message Text="Copying Cogworks.CogFlare.Core files: $(CogworksCogFlareCoreContentFilesPath) - #@(CogworksCogFlareCoreContentFiles->Count()) files" Importance="high" />
+    <Copy SourceFiles="@(CogworksCogFlareCoreContentFiles)" DestinationFiles="@(CogworksCogFlareCoreContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\Cogworks.CogFlare.Core\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="ClearCogworksCogFlareCoreAssets" BeforeTargets="Clean">
+    <ItemGroup>
+      <CogworksCogFlareCoreDir Include="$(MSBuildProjectDirectory)\App_Plugins\Cogworks.CogFlare.Core\" />
+    </ItemGroup>
+    <Message Text="Clear old Cogworks.CogFlare.Core data" Importance="high" />
+    <RemoveDir Directories="@(CogworksCogFlareCoreDir)" />
+  </Target>
+</Project>

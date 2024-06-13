@@ -497,3 +497,5 @@ appsettings.json
 !src/**/.editorconfig
 !**/*.json
 src/**/appsettings.Development.json
+src/**/Smidge/Cache/
+/src/Cogworks.CogFlare.UI/umbraco/Data/TEMP
