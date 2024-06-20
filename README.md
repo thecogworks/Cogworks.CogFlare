@@ -59,6 +59,13 @@ Add these settings to the **appsettings.json**
   }
 ```
 
+## Backoffice User:
+
+```sh
+Email: admin@admin.com
+Password: 0123456789
+```
+
 <h2 style="color:plum">License</h2>
 
 Licensed under the [MIT License](LICENSE.md)
