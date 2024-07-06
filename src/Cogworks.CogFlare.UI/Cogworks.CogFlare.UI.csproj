@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="App_Plugins\Cogworks.CogFlare\cogflare.css" />
+    <Content Include="App_Plugins\Cogworks.CogFlare\cogflare.html" />
+    <Content Include="App_Plugins\Cogworks.CogFlare\cogflare.png" />
+    <Content Include="App_Plugins\Cogworks.CogFlare\Lang\en-GB.xml" />
+    <Content Include="App_Plugins\Cogworks.CogFlare\Lang\en-US.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Umbraco.Cms" Version="13.2.2" />
     <PackageReference Include="Umbraco.Forms" Version="13.1.1" />
   </ItemGroup>
@@ -18,7 +26,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="App_Plugins\Cogworks.CogFlare\cogflare.controller.js" />
+    <None Include="App_Plugins\Cogworks.CogFlare\cogflare.resources.js" />
+    <None Include="App_Plugins\Cogworks.CogFlare\package.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Cogworks.CogFlare.Core\Cogworks.CogFlare.Core.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="xcopy /S /H /Y /I &quot;$(ProjectDir)..\Cogworks.CogFlare\App_Plugins\Cogworks.CogFlare&quot; &quot;$(ProjectDir)\App_Plugins\Cogworks.CogFlare&quot;&#xD;&#xA;&#xD;&#xA;" />
+  </Target>
 
 </Project>

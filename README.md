@@ -13,6 +13,8 @@ A package that helps automatically purge CloudFlare cache
 *   When any content node is changed(**Published/Unpublished/Deleted**), that node and any nodes referencing it will be purged from CloudFlare's cache
 *   When any media item is changed(**Saved**), it will be purged from CloudFlare's cache
 *   The ability to toggle the package functionality on/off in the settings
+*   The ability to toggle the cloudfarte cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
+*   If you want to bypass a form page now you have 2 options, using the "disableCloudFlareCache" in the form node or using the "BlockListPropertyAlias" and "FormBlockAlias" in the settings
 
 <h3 style="color:salmon">Advanced Functionality</h3>
 
@@ -55,7 +57,10 @@ Add these settings to the **appsettings.json**
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "KeyNodes": "1234, 031089",
-    "IsEnabled": true
+    "IsEnabled": true,
+    "BlockListPropertyAlias": "",
+    "FormBlockAlias": "",
+    "Domain": "https://www.example.com"
   }
 ```
 
