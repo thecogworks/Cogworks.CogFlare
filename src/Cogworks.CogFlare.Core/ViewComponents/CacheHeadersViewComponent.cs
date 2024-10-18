@@ -18,8 +18,8 @@ public class CacheHeadersViewComponent : ViewComponent
     {
         if (IsCacheable())
         {
-            HttpContext.Response.Headers["Cache-Control"] = "public, max-age=2592000";
-            HttpContext.Response.Headers["Edge-Control"] = "cache-maxage=2592000s";
+            HttpContext.Response.Headers["Cache-Control"] = $"public, max-age={TimeConstants.OneMonth}";
+            HttpContext.Response.Headers["Edge-Control"] = $"cache-maxage={TimeConstants.OneMonth}s";
         }
         else
         {
