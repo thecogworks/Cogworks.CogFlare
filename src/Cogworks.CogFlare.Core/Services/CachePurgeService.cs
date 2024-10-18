@@ -62,11 +62,11 @@ public class CachePurgeService : ICachePurgeService
 
             foreach (var relatedId in relatedIds)
             {
-                var url = $"{baseDomain}{_umbracoContentNodeService.GetContentUrlById(relatedId, isMedia, baseDomain.HasValue())}";
+                var url = _umbracoContentNodeService.GetContentUrlById(relatedId, isMedia, baseDomain.HasValue());
 
                 if (url.HasValue())
                 {
-                    urlsToPurge.Add(url);
+                    urlsToPurge.Add($"{baseDomain}{url}");
                 }
             }
 
