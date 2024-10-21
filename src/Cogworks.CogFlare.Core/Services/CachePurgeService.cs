@@ -1,6 +1,4 @@
-﻿using static Umbraco.Cms.Core.Constants.Conventions;
-
-namespace Cogworks.CogFlare.Core.Services;
+﻿namespace Cogworks.CogFlare.Core.Services;
 
 public interface ICachePurgeService
 {
@@ -28,7 +26,6 @@ public class CachePurgeService : ICachePurgeService
         _cogFlareSettings = cogFlareSettings;
         _logger = logger;
     }
-
 
     public async Task PurgeExternalCacheAsync(
         IEnumerable<int> ids,

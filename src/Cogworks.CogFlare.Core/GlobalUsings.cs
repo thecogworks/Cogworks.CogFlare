@@ -30,3 +30,5 @@ global using Umbraco.Cms.Web.BackOffice.Controllers;
 global using Umbraco.Extensions;
 global using Cogworks.CogFlare.Core.Middlewares;
 global using Microsoft.AspNetCore.Builder;
+global using static Umbraco.Cms.Core.Constants.Conventions;
+global using Umbraco.Cms.Core.Models.Blocks;
