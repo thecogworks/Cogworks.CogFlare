@@ -53,12 +53,10 @@ public class CachePurgeService : ICachePurgeService
                 return;
             }
 
-            var baseDomain = _cogFlareSettings.Domain;
-
             var urlsToPurge = relatedIds.Select(relateId =>
             {
-              var url = _umbracoContentNodeService.GetContentUrlById(relateId, isMedia, baseDomain.HasValue());
-              return !url.HasValue() ? null : $"{baseDomain}{url}";
+              var url = _umbracoContentNodeService.GetContentUrlById(relateId, isMedia, _cogFlareSettings.Domain.HasValue());
+              return !url.HasValue() ? null : $"{_cogFlareSettings.Domain}{url}";
             }).Where(x => x != null);
 
             _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
