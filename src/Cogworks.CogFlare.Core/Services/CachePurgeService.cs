@@ -33,8 +33,6 @@ public class CachePurgeService : ICachePurgeService
         string notificationLabel,
         bool isMedia = false)
     {
-        var urlsToPurge = new List<string>();
-
         foreach (var id in ids)
         {
             if (IsKeyNode(id))
@@ -57,15 +55,11 @@ public class CachePurgeService : ICachePurgeService
 
             var baseDomain = _cogFlareSettings.Domain;
 
-            foreach (var relatedId in relatedIds)
+            var urlsToPurge = relatedIds.Select(relateId =>
             {
-                var url = _umbracoContentNodeService.GetContentUrlById(relatedId, isMedia, baseDomain.HasValue());
-
-                if (url.HasValue())
-                {
-                    urlsToPurge.Add($"{baseDomain}{url}");
-                }
-            }
+              var url = _umbracoContentNodeService.GetContentUrlById(relateId, isMedia, baseDomain.HasValue());
+              return !url.HasValue() ? null : $"{baseDomain}{url}";
+            }).Where(x => x != null);
 
             _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
             await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
