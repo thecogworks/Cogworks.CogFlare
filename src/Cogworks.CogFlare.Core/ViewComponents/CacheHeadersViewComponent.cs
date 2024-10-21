@@ -46,6 +46,6 @@ public class CacheHeadersViewComponent : ViewComponent
             .Where(property => property.PropertyType.DataType.EditorAlias == UmbracoConstants.BlockList && property.HasValue())
             .SelectMany(content => content.Value(null!) as IEnumerable<BlockListItem> ?? Enumerable.Empty<BlockListItem>());
 
-        return !blockList.Any(block => block.Content.ContentType.Alias.InvariantEquals(_cogFlareSettings.FormBlockAlias));
+        return blockList.All(block => !block.Content.ContentType.Alias.InvariantEquals(_cogFlareSettings.FormBlockAlias));
     }
 }
