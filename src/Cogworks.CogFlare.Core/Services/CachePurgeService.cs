@@ -57,7 +57,9 @@ public class CachePurgeService : ICachePurgeService
             {
               var url = _umbracoContentNodeService.GetContentUrlById(relateId, isMedia, _cogFlareSettings.Domain.HasValue());
               return !url.HasValue() ? null : $"{_cogFlareSettings.Domain}{url}";
-            }).Where(x => x != null);
+            })
+            .Where(x => x != null)
+            .ToList();
 
             _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
             await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
@@ -74,7 +76,7 @@ public class CachePurgeService : ICachePurgeService
             .GetByChildId(nodeId)
             .Where(x => x.RelationType.Alias == relationshipType)
             .Select(x => x.ParentId)
-            .Union(new List<int> { nodeId })
+            .Append(nodeId)
         .ToList();
 
         return relatedIds;
