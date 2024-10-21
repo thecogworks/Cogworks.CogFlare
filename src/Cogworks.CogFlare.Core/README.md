@@ -12,7 +12,7 @@ A package that helps automatically purge CloudFlare cache
 *   When any media item is changed(**Saved**), it will be purged from CloudFlare's cache
 *   The ability to toggle the package functionality on/off in the settings
 *   The ability to toggle the cloudfarte cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
-*   If you want to bypass a form page now you have 2 options, using the "disableCloudFlareCache" in the form node or using the "BlockListPropertyAlias" and "FormBlockAlias" in the settings
+*   If you want to bypass a page now you have 2 options, using the "disableCloudFlareCache" in the node or using the "BlockListPropertyAlias" and "BlockAliases" in the settings
 
 ### Advanced Functionality
 
@@ -53,7 +53,7 @@ Add these settings to the **appsettings.json**
     "KeyNodes": "1234, 031089",
     "IsEnabled": true,
     "BlockListPropertyAlias": "",
-    "FormBlockAlias": "",
+    "BlockAliases": "formBlock,newBlock",
     "Domain": "https://www.example.com"
   }
 ```

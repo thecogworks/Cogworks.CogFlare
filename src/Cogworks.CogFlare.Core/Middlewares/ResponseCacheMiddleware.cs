@@ -51,15 +51,20 @@ namespace Cogworks.CogFlare.Core.Middlewares
                                                  currentNode.Value<bool>(ApplicationConstants.DisableCloudFlareCache);
 
                     var blockListPropertyAlias = _cogFlareSettings.BlockListPropertyAlias;
-                    var formBlockAlias = _cogFlareSettings.FormBlockAlias;
+                    var blockAliases = _cogFlareSettings.BlockAliases.Split(SeparatorConstants.Comma);
 
                     var blockList = currentNode.HasProperty(blockListPropertyAlias)
                         ? currentNode.Value<BlockListModel>(blockListPropertyAlias)
                         : null;
 
-                    var formBlock = blockList?.FirstOrDefault(x => x.Content.ContentType.Alias == formBlockAlias);
+                    var blocks = blockAliases.Select(blockAlias =>
+                    {
+                      var block = blockList?.FirstOrDefault(x => x.Content.ContentType.Alias == blockAlias);
+                      return block;
+                    }).ToList();
 
-                    if (disableCloudFlareCache || formBlock != null)
+
+                    if (disableCloudFlareCache || blocks.Any(b => b != null))
                     {
                         context.Response.GetTypedHeaders().CacheControl =
                             new Microsoft.Net.Http.Headers.CacheControlHeaderValue

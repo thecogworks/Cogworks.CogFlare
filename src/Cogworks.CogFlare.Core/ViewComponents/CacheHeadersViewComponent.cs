@@ -30,7 +30,9 @@ public class CacheHeadersViewComponent : ViewComponent
 
     private bool IsCacheable()
     {
-        if(!_cogFlareSettings.FormBlockAlias.HasValue())
+        var blockAliases = _cogFlareSettings.BlockAliases.Split(SeparatorConstants.Comma);
+
+        if(!blockAliases.HasAny())
         {
             return true;
         }
@@ -46,6 +48,6 @@ public class CacheHeadersViewComponent : ViewComponent
             .Where(property => property.PropertyType.DataType.EditorAlias == UmbracoConstants.BlockList && property.HasValue())
             .SelectMany(content => content.Value(null!) as IEnumerable<BlockListItem> ?? Enumerable.Empty<BlockListItem>());
 
-        return blockList.All(block => !block.Content.ContentType.Alias.InvariantEquals(_cogFlareSettings.FormBlockAlias));
+        return blockList.All(block => !blockAliases.Contains(block.Content.ContentType.Alias));
     }
 }

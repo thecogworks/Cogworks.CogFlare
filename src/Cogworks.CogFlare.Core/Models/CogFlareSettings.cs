@@ -9,7 +9,7 @@ public record CogFlareSettings
     public string Domain { get; init; } = string.Empty;
     public bool IsEnabled { get; init; }
     public string BlockListPropertyAlias { get; init; } = string.Empty;
-    public string FormBlockAlias { get; init; } = string.Empty;
+    public string BlockAliases { get; init; } = string.Empty;
     public bool IsValid => ApiKey.HasValue() && Email.HasValue() && Endpoint.HasValue();
 
     public IEnumerable<int> GetKeyNodes()
