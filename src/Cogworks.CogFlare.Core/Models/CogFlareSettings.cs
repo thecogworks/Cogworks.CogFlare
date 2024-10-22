@@ -8,7 +8,7 @@ public record CogFlareSettings
     public string KeyNodes { get; init; } = string.Empty;
     public string Domain { get; init; } = string.Empty;
     public bool IsEnabled { get; init; }
-    public bool EnableLogging = true;
+    public bool EnableLogging { get; init; } = true;
     public string BlockAliases { get; init; } = string.Empty;
     public bool IsValid => ApiKey.HasValue() && Email.HasValue() && Endpoint.HasValue();
 
