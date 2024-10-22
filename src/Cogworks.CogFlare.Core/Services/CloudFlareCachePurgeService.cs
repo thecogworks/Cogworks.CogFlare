@@ -25,7 +25,11 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
     {
         if (!_cogFlareSettings.IsValid || (!urls.HasAny() && !purgeEverything))
         {
-            _logger.LogInformation("Failed to complete CloudFlare purge: CogFlare Settings are invalid");
+            if (_cogFlareSettings.EnableLogging)
+            {
+                _logger.LogInformation("Failed to complete CloudFlare purge: CogFlare Settings are invalid");
+            }
+
             return false;
         }
 
@@ -53,12 +57,21 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
         try
         {
             var response = await client.SendAsync(request, cancellationToken);
-            _logger.LogInformation($"CloudFlare response for purging: {response.ReasonPhrase}");
+
+            if (_cogFlareSettings.EnableLogging)
+            {
+                _logger.LogInformation($"CloudFlare response for purging: {response.ReasonPhrase}");
+            }
+
             return response.IsSuccessStatusCode;
         }
         catch (Exception exception)
         {
-            _logger.LogInformation($"Failed to complete CloudFlare purge: [{exception.Message}]");
+            if (_cogFlareSettings.EnableLogging)
+            {
+                _logger.LogInformation($"Failed to complete CloudFlare purge: [{exception.Message}]");
+            }
+
             return false;
         }
     }

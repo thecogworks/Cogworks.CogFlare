@@ -37,7 +37,11 @@ public class CachePurgeService : ICachePurgeService
         {
             if (IsKeyNode(id))
             {
-                _logger.LogInformation($"Full purge triggered: [{id}] Key node {notificationLabel}");
+                if (_cogFlareSettings.EnableLogging)
+                {
+                    _logger.LogInformation($"Full purge triggered: [{id}] Key node {notificationLabel}");
+                }
+
                 await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
 
                 return;
@@ -47,7 +51,11 @@ public class CachePurgeService : ICachePurgeService
 
             if (relatedIds.Any(IsKeyNode))
             {
-                _logger.LogInformation($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
+                if (_cogFlareSettings.EnableLogging)
+                {
+                    _logger.LogInformation($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
+                }
+
                 await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
 
                 return;
@@ -61,7 +69,11 @@ public class CachePurgeService : ICachePurgeService
             .Where(x => x != null)
             .ToList();
 
-            _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
+            if (_cogFlareSettings.EnableLogging)
+            {
+                _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
+            }
+
             await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
         }
     }
