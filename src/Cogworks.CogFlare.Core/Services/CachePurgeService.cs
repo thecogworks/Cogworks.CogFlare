@@ -37,10 +37,7 @@ public class CachePurgeService : ICachePurgeService
         {
             if (IsKeyNode(id))
             {
-                if (_cogFlareSettings.EnableLogging)
-                {
-                    _logger.LogInformation($"Full purge triggered: [{id}] Key node {notificationLabel}");
-                }
+                LogInformationIfLoggingEnabled($"Full purge triggered: [{id}] Key node {notificationLabel}");
 
                 await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
 
@@ -51,10 +48,7 @@ public class CachePurgeService : ICachePurgeService
 
             if (relatedIds.Any(IsKeyNode))
             {
-                if (_cogFlareSettings.EnableLogging)
-                {
-                    _logger.LogInformation($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
-                }
+                LogInformationIfLoggingEnabled($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
 
                 await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
 
@@ -69,10 +63,7 @@ public class CachePurgeService : ICachePurgeService
             .Where(x => x != null)
             .ToList();
 
-            if (_cogFlareSettings.EnableLogging)
-            {
-                _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
-            }
+            LogInformationIfLoggingEnabled($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
 
             await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
         }
@@ -99,5 +90,13 @@ public class CachePurgeService : ICachePurgeService
         return _cogFlareSettings
             .GetKeyNodes()
             .Contains(nodeId);
+    }
+
+    private void LogInformationIfLoggingEnabled(string message)
+    {
+        if (_cogFlareSettings.EnableLogging)
+        {
+          _logger.LogInformation(message);
+        }
     }
 }
