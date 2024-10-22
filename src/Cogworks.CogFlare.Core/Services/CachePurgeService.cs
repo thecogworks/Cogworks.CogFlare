@@ -2,7 +2,8 @@
 
 public interface ICachePurgeService
 {
-    Task PurgeExternalCacheAsync(IEnumerable<int> ids, CancellationToken cancellationToken, string notificationLabel, bool isMedia = false);
+    Task PurgeExternalCacheAsync(IEnumerable<int> ids, CancellationToken cancellationToken, string notificationLabel,
+        bool isMedia = false);
 }
 
 public class CachePurgeService : ICachePurgeService
@@ -10,21 +11,21 @@ public class CachePurgeService : ICachePurgeService
     private readonly ICloudFlareCachePurgeService _cloudFlareCachePurgeService;
     private readonly IUmbracoContentNodeService _umbracoContentNodeService;
     private readonly IRelationService _relationService;
+    private readonly ILogService<CachePurgeService> _logService;
     private readonly CogFlareSettings _cogFlareSettings;
-    private readonly ILogger<ExternalCachePurgeComponent> _logger;
 
     public CachePurgeService(
         ICloudFlareCachePurgeService cloudFlareCachePurgeService,
         IUmbracoContentNodeService umbracoContentNodeService,
         IRelationService relationService,
-        CogFlareSettings cogFlareSettings,
-        ILogger<ExternalCachePurgeComponent> logger)
+        ILogService<CachePurgeService> logService,
+        CogFlareSettings cogFlareSettings)
     {
         _cloudFlareCachePurgeService = cloudFlareCachePurgeService;
         _umbracoContentNodeService = umbracoContentNodeService;
         _relationService = relationService;
+        _logService = logService;
         _cogFlareSettings = cogFlareSettings;
-        _logger = logger;
     }
 
     public async Task PurgeExternalCacheAsync(
@@ -33,13 +34,12 @@ public class CachePurgeService : ICachePurgeService
         string notificationLabel,
         bool isMedia = false)
     {
-        var urlsToPurge = new List<string>();
-
         foreach (var id in ids)
         {
             if (IsKeyNode(id))
             {
-                _logger.LogInformation($"Full purge triggered: [{id}] Key node {notificationLabel}");
+                _logService.Log($"Full purge triggered: [{id}] Key node {notificationLabel}");
+
                 await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
 
                 return;
@@ -49,25 +49,25 @@ public class CachePurgeService : ICachePurgeService
 
             if (relatedIds.Any(IsKeyNode))
             {
-                _logger.LogInformation($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
+                _logService.Log($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
+
                 await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
 
                 return;
             }
 
-            var baseDomain = _cogFlareSettings.Domain;
-
-            foreach (var relatedId in relatedIds)
-            {
-                var url = _umbracoContentNodeService.GetContentUrlById(relatedId, isMedia, baseDomain.HasValue());
-
-                if (url.HasValue())
+            var urlsToPurge = relatedIds.Select(relatedId =>
                 {
-                    urlsToPurge.Add($"{baseDomain}{url}");
-                }
-            }
+                    var url = _umbracoContentNodeService.GetContentUrlById(relatedId, isMedia,
+                        _cogFlareSettings.Domain.HasValue());
+                    return url.HasValue() ? $"{_cogFlareSettings.Domain}{url}" : null;
+                })
+                .Where(x => x is not null)
+                .ToList();
 
-            _logger.LogInformation($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
+            _logService.Log(
+                $"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
+
             await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
         }
     }
@@ -82,8 +82,8 @@ public class CachePurgeService : ICachePurgeService
             .GetByChildId(nodeId)
             .Where(x => x.RelationType.Alias == relationshipType)
             .Select(x => x.ParentId)
-            .Union(new List<int> { nodeId })
-        .ToList();
+            .Append(nodeId)
+            .ToList();
 
         return relatedIds;
     }
