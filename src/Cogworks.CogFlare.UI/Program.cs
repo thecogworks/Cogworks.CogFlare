@@ -11,8 +11,6 @@ var app = builder.Build();
 
 await app.BootUmbracoAsync();
 
-app.UseResponseCacheMiddleware();
-
 app.UseUmbraco()
     .WithMiddleware(u =>
     {
