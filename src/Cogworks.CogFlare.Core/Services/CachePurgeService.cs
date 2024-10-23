@@ -11,14 +11,14 @@ public class CachePurgeService : ICachePurgeService
     private readonly ICloudFlareCachePurgeService _cloudFlareCachePurgeService;
     private readonly IUmbracoContentNodeService _umbracoContentNodeService;
     private readonly IRelationService _relationService;
-    private readonly ILogService<CachePurgeService> _logService;
+    private readonly ILogService _logService;
     private readonly CogFlareSettings _cogFlareSettings;
 
     public CachePurgeService(
         ICloudFlareCachePurgeService cloudFlareCachePurgeService,
         IUmbracoContentNodeService umbracoContentNodeService,
         IRelationService relationService,
-        ILogService<CachePurgeService> logService,
+        ILogService logService,
         CogFlareSettings cogFlareSettings)
     {
         _cloudFlareCachePurgeService = cloudFlareCachePurgeService;

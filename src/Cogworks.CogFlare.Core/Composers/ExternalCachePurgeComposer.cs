@@ -19,7 +19,7 @@ public class ExternalCachePurgeComposer : IComposer
             .AddTransient<ICachePurgeService, CachePurgeService>()
             .AddTransient<ICloudFlareCachePurgeService, CloudFlareCachePurgeService>()
             .AddTransient<IUmbracoContentNodeService, UmbracoContentNodeService>()
-            .AddTransient(typeof(ILogService<>), typeof(LogService<>));
+            .AddTransient<ILogService,LogService>();
 
         builder
             .AddNotificationAsyncHandler<ContentPublishedNotification, ExternalCachePurgeComponent>()

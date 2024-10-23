@@ -1,16 +1,16 @@
 ﻿namespace Cogworks.CogFlare.Core.Services;
 
-public interface ILogService<T>
+public interface ILogService
 {
     void Log(string message);
 }
 
-public class LogService<T> : ILogService<T>
+public class LogService : ILogService
 {
     private readonly CogFlareSettings _cogFlareSettings;
-    private readonly ILogger<T> _logger;
+    private readonly ILogger<LogService> _logger;
 
-    public LogService(CogFlareSettings cogFlareSettings, ILogger<T> logger)
+    public LogService(CogFlareSettings cogFlareSettings, ILogger<LogService> logger)
     {
         _cogFlareSettings = cogFlareSettings;
         _logger = logger;
