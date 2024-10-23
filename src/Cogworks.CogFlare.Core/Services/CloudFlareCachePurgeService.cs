@@ -10,11 +10,11 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly CogFlareSettings _cogFlareSettings;
-    private readonly ILogService _logService;
+    private readonly ICogFlareLogService _logService;
 
     public CloudFlareCachePurgeService(
         CogFlareSettings cogFlareSettings,
-        ILogService logService,
+        ICogFlareLogService logService,
         IHttpClientFactory httpClientFactory)
     {
         _cogFlareSettings = cogFlareSettings;
