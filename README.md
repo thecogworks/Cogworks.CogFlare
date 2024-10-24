@@ -13,7 +13,7 @@ A package that helps automatically purge CloudFlare cache
 *   When any content node is changed(**Published/Unpublished/Deleted**), that node and any nodes referencing it will be purged from CloudFlare's cache
 *   When any media item is changed(**Saved**), it will be purged from CloudFlare's cache
 *   The ability to toggle the package functionality on/off in the settings
-*   The ability to toggle the cloudfarte cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
+*   The ability to toggle the cloudflare cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
 *   If you want to bypass a page now you have 2 options, using the "disableCloudFlareCache" in the node or using the "BlockAliases" in the settings
 
 <h3 style="color:salmon">Advanced Functionality</h3>
@@ -58,19 +58,19 @@ Add these settings to the **appsettings.json**
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "KeyNodes": "1234, 031089",
     "IsEnabled": true,
-    "BlockAliases": "formBlock,newBlock",
+    "BlockAliases": "formBlock, newBlock",
     "Domain": "https://www.example.com"
   }
 ```
 
-For bypass logic you can use 2 options :
-1. Adding a new property "disableCloudFlareCache" in the node where you want to disable cache :
+For bypass logic you can use 2 options:
+1. Adding a new property "disableCloudFlareCache" in the node where you want to disable cache:
 ![DisableCloudFare-Property](src/Cogworks.CogFlare.Core/disableCloudFareCacheProperty.jpg)
-2. Adding the block aliases which will be included in the view where you want to disable cache :
+2. Adding the block aliases which will be included in the view where you want to disable cache:
     ```js
       "CogFlareSettings": {
         ...
-        "BlockAliases": "formBlock,newBlock, ...",
+        "BlockAliases": "formBlock, newBlock, ...",
         ...
       }
     ```
