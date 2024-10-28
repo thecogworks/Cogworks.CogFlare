@@ -13,7 +13,7 @@ A package that helps automatically purge CloudFlare cache
 *   When any content node is changed(**Published/Unpublished/Deleted**), that node and any nodes referencing it will be purged from CloudFlare's cache
 *   When any media item is changed(**Saved**), it will be purged from CloudFlare's cache
 *   The ability to toggle the package functionality on/off in the settings
-*   The ability to toggle the cloudflare cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
+*   The ability to toggle the Cloudflare cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
 *   If you want to bypass a page now you have 2 options, using the "disableCloudFlareCache" in the node or using the "BlockAliases" in the settings
 
 <h3 style="color:salmon">Advanced Functionality</h3>
@@ -75,11 +75,10 @@ For bypass logic you can use 2 options:
       }
     ```
     And then you need to add the view component in your Master or required page View
-    ```razor
-      @using Cogworks.CogFlare.Core.Constants
+    ```razor   
       @{	
             @await Component.InvokeAsync(ApplicationConstants.CogFlareCacheHeaders)
-        }
+       }
     ```
 
 ## Backoffice User:
