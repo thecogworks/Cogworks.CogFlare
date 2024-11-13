@@ -6,10 +6,11 @@ public class ExternalCachePurgeComposer : IComposer
     {
         var cogFlareSettings = builder.Config
             .GetSection(nameof(CogFlareSettings))
-            .Get<CogFlareSettings>();
+            .Get<CogFlareSettings>() ?? new CogFlareSettings();
 
         if (!cogFlareSettings?.IsEnabled ?? true)
         {
+            builder.Services.AddTransient(_ => cogFlareSettings);
             return;
         }
 

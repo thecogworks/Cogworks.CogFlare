@@ -1,4 +1,4 @@
-﻿using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
+using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
 
 namespace Cogworks.CogFlare.Core.ViewComponents;
 
@@ -10,11 +10,16 @@ public class CacheHeadersViewComponent : ViewComponent
     public CacheHeadersViewComponent(IUmbracoContextAccessor umbracoContextAccessor, CogFlareSettings cogFlareSettings)
     {
         _umbracoContextAccessor = umbracoContextAccessor;
-        _cogFlareSettings = cogFlareSettings;
+        _cogFlareSettings = cogFlareSettings ?? new CogFlareSettings();
     }
 
     public IViewComponentResult Invoke()
     {
+        if (!_cogFlareSettings.IsEnabled)
+        {
+            return Content(string.Empty);
+        }
+
         if (IsCacheable())
         {
             HttpContext.Response.Headers["Cache-Control"] = $"public, max-age={TimeConstants.OneMonth}";
