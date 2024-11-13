@@ -1,4 +1,4 @@
-using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
+﻿using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
 
 namespace Cogworks.CogFlare.Core.ViewComponents;
 
@@ -30,7 +30,7 @@ public class CacheHeadersViewComponent : ViewComponent
             HttpContext.Response.Headers["Cache-Control"] = "private, no-cache, must-revalidate";
         }
 
-        return Content(String.Empty);
+        return Content(string.Empty);
     }
 
     private bool IsCacheable()
