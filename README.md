@@ -20,35 +20,51 @@
 
 A package that helps automatically purge CloudFlare cache
 
+<h2 style="color:plum">Why is CogFlare Needed?</h2>
+
+Most CMS platforms, including Umbraco, are designed to be **dynamic** and, by default, don’t cache full HTML pages. While they handle caching for assets like JavaScript, CSS, and images, HTML is often left uncached because dynamic pages frequently change. This ensures fresh content but comes with a cost: **every request hits the server**, even for unchanged pages, leading to unnecessary server load and slower response times.
+
+**CogFlare** solves this problem by integrating Umbraco with **Cloudflare**, allowing you to leverage full-page HTML caching through their CDN. While Cloudflare can efficiently cache and serve HTML, the challenge lies in knowing when to purge cached content. Without proper purging, outdated or incorrect content may be served to users.
+
+This is where CogFlare steps in. The package automatically monitors changes in your CMS:
+- **When nodes or content are updated**, CogFlare identifies the affected pages and sends targeted purge requests to Cloudflare.
+- Instead of purging the entire site, only the relevant pages are cleared, ensuring efficient caching and fresh content delivery.
+
+By automating the caching and purging process, CogFlare provides the performance benefits of full-page caching without the complexities of managing it manually.
+
 <h2 style="color:plum">Usage</h2>
 
-<h3 style="color:salmon">Basic Functionality</h3>
+<h3 style="color:salmon">Basic Functionality</h2>
 
-*   When any content node is changed(**Published/Unpublished/Deleted**), that node and any nodes referencing it will be purged from CloudFlare's cache
-*   When any media item is changed(**Saved**), it will be purged from CloudFlare's cache
-*   The ability to toggle the package functionality on/off in the settings
-*   The ability to toggle the Cloudflare cache by adding the property "disableCloudFlareCache" to the node you wish to ignore
-*   If you want to bypass a page now you have 2 options, using the "disableCloudFlareCache" in the node or using the "BlockAliases" in the settings
+- Automatically purges Cloudflare cache when:
+  - Content nodes are **published, unpublished, or deleted**.
+  - Media items are **saved**.
+- Ability to toggle the package functionality on/off in the settings.
+- Ability to toggle logging on/off in the settings.
 
-<h3 style="color:salmon">Advanced Functionality</h3>
+<h3 style="color:salmon">Advanced Functionality</h2>
 
-*   A list of Ids for **Key Nodes** on the site can be configured in the Settings
-*   A **Key Node** is any content node that will require a **FULL site cache purge** to be trigger if that node or any content nodes referenced by it is change (Site Settings, Navigation, Footers...) 
+- Configure **Key Nodes** in the settings:
+  - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
+- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncachable**.
 
-<h3 style="color:salmon">Backoffice Dashboard</h3>
+<h3 style="color:salmon">Backoffice Dashboard</h2>
 
-*   A dashboard has been added to the Settings section of the backoffice
-*   Currenlty only **Admins** can access it 
-*   This dashboard contains a button to manually trigger a **FULL site cache purge**
-*   There is also an option to view the current configuration for the package
+- A dashboard has been added to the **Settings** section of the backoffice.
+  - Currently, only **Admins** can access it.
+- Features include:
+  - A button to manually trigger a **FULL site cache purge**.
+  - Viewing the current configuration for the package.
 
 <h2 style="color:plum">Logs</h2>
 
-There is logged message every time a node eligible for caching is changed and also to show the result of the purge request to CloudFlare
+- Logs are created whenever:
+  - A node eligible for caching is changed.
+  - A purge request to Cloudflare is made.
 
 ![CogFlare Logs](images/cogflare-logs-1.png)
 
-There's also a logged message to show the result of the purge request to CloudFlare
+- Additional logs display the result of the purge request to Cloudflare:
 
 ![CogFlare CloudFlare Logs](images/cogflare-logs-2.png)
 
@@ -72,6 +88,7 @@ Add these settings to the **appsettings.json**
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
+    "EnableLogging": true, //optional
     "KeyNodes": "1234, 031089", // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
     "CacheTime": "2592000" // optional => will default to 1 month
