@@ -4,7 +4,7 @@
     "Name": "Cogworks",
     "Description": "A distinguished and longstanding Umbraco Partner",
     "Url": "https://www.wearecogworks.com",
-    "ImageUrl": "https://lh3.googleusercontent.com/OkquQPZH-KsVORsQOFMT1zWSi8X-KMFWQ4FizRsG_BnbdBJZr-4FxIvKjTX7yrgNgLqdZjrqVosVtfQ6ZucMmVg=s0",
+    "ImageUrl": "https://cdn.wearecogworks.com/media/hd1asgw3/logo.svg",
     "Contributors": [],
     "SyncContributorsFromRepository": false
   },
@@ -19,16 +19,20 @@
   "RelatedPackages": [],
   "Screenshots": [
     {
-      "ImageUrl": "https://ibb.co/nCPFq9G",
+      "ImageUrl": "https://cms.wearecogworks.com/media/icoenstm/cogflare-dashboard.png",
       "Caption": "CogFlare Dashboard"
     },
     {
-      "ImageUrl": "https://ibb.co/prRWD4H",
+      "ImageUrl": "https://cms.wearecogworks.com/media/hq4fqbv0/cogflare-logs-1.png",
       "Caption": "CogFlare purge trigger logs"
     },
     {
-      "ImageUrl": "https://ibb.co/G0P0QLr",
+      "ImageUrl": "https://cms.wearecogworks.com/media/gkojwaj1/cogflare-logs-2.png",
       "Caption": "CogFlare CloudFlare logs"
+    },
+    {
+      "ImageUrl": "https://cms.wearecogworks.com/media/pnnoc2d1/cogflare.png",
+      "Caption": "CogFlare logo"
     }
   ],
   "Tags": [

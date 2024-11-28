@@ -1,4 +1,6 @@
-<img src="cogflare.png" alt="Cogworks.CogFlare" style="float:right" />
+<img src="cogflare.png" 
+     alt="Cogworks.CogFlare" 
+     style="float:right;height:150px;width:150px" />
 
 <h3 style="font-size:2.7rem;color:#ff">CogFlare</h3>
 
@@ -53,33 +55,65 @@ Install-Package Cogworks.CogFlare
 Add these settings to the **appsettings.json**
 ```js
   "CogFlareSettings": {
+    "IsEnabled": true,
     "ApiKey": "xxx",
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
-    "KeyNodes": "1234, 031089",
-    "IsEnabled": true,
-    "BlockAliases": "formBlock, newBlock",
-    "Domain": "https://www.example.com"
+    "Domain": "https://www.example.com",
+    "KeyNodes": "1234, 031089", // optional
+    "BlockAliases": "formBlock, otherFormBlock", // optional
+    "CacheTime": "2592000" // optional => will default to 1 month
   }
 ```
 
-For bypass logic you can use 2 options:
-1. Adding a new property "disableCloudFlareCache" in the node where you want to disable cache:
-![DisableCloudFare-Property](src/Cogworks.CogFlare.Core/disableCloudFareCacheProperty.jpg)
-2. Adding the block aliases which will be included in the view where you want to disable cache:
-    ```js
-      "CogFlareSettings": {
-        ...
-        "BlockAliases": "formBlock, newBlock, ...",
-        ...
-      }
-    ```
-    And then you need to add the view component in your Master or required page View
-    ```razor   
-      @{	
-            @await Component.InvokeAsync(ApplicationConstants.CogFlareCacheHeaders)
-       }
-    ```
+To add cache headers to your pages please add the view component in your Master or required page View
+```razor
+@await Component.InvokeAsync("CacheHeaders")
+```
+
+By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
+
+<h2 style="color:plum">Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching</h2>
+
+Umbraco Forms include **anti-forgery tokens** by default. These tokens must be unique for each page to ensure forms function correctly. 
+
+However, when implementing **full-page HTML caching**, this can cause issues: cached pages will reuse the same anti-forgery token, breaking the forms on those pages.
+
+This package provides a solution to ensure both caching and forms can coexist seamlessly.
+
+<h3 style="color:salmon">Problem with Caching and Forms</h3>
+
+If you use **full-page HTML caching** for a page containing an Umbraco form:
+- The **anti-forgery token** will be cached along with the page's HTML.
+- When users access the page, the token will no longer be unique, causing form submissions to fail.
+
+<h3 style="color:salmon">Workarounds</h3>
+
+To resolve this issue, the package offers two options:
+
+### **Option 1: Disable Anti-Forgery Tokens**
+You can **disable anti-forgery tokens** for the affected pages:
+1. This allows the page to remain cached while keeping the form functional.
+2. **Caution**: Disabling anti-forgery tokens may reduce the security of form submissions.
+
+### **Option 2: Use Blocklist Aliases to Disable Caching for Specific Pages**
+This package includes a feature to **conditionally disable caching** for pages containing specific blocks, such as forms, to avoid the anti-forgery token issue.
+
+1. **How It Works**:
+   - In the `CogFlareSettings` in the appsettings, you can provide a **blocklist alias** (e.g., a block alias for the Umbraco form or any other block you don’t want to cache).
+   - When rendering the page, the package checks for the presence of any of the specified block aliases.
+   - If the page includes a block with one of these aliases, `private, no-cache, must-revalidate` will be set for the page, effectively disabling caching for that page.
+
+2. **Configuration**:
+   Add your `BlockAliases` to the `CogFlareSettings`:
+```js
+  "CogFlareSettings": {
+    ...
+    ...
+    "BlockAliases": "formBlock, otherFormBlock"
+  }
+```
+
 
 ## Backoffice User:
 
