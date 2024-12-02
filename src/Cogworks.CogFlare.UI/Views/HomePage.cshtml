@@ -2,5 +2,97 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Cogworks.CogFlare.UI.Models.CmsModels.Generated.HomePage>
 @{
     Layout = null;
-    @await Component.InvokeAsync(ApplicationConstants.CogFlareCacheHeaders)
 }
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @await Component.InvokeAsync(ApplicationConstants.CogFlareCacheHeaders)
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <title>CogFlare Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #0078d7;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #f1f1f1;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        code {
+            display: block;
+            background: #f4f4f4;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #0078d7;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CogFlare Demo Site</h1>
+    </header>
+    <main>
+        <section id="intro">
+            <h2>Introduction</h2>
+            <p>This site is a simple demo for testing the CogFlare package.</p>
+        </section>
+        <section id="test-content">
+            <h2>Test Content</h2>
+            <p>Below is a sample HTML content block for testing full-page HTML caching and purging behavior:</p>
+            <div id="dynamic-content">
+                <p>This content block is dynamic and should trigger caching/purging events:</p>
+                <p><strong>Current Timestamp:</strong> <span id="timestamp"></span></p>
+            </div>
+            <div id="sample-image">
+                <h3>Sample Image</h3>
+                <img src="~/images/cogflare.png" style="height:200px;width:200px;" alt="Sample CogFlare Demo Image">
+            </div>
+        </section>
+    </main>
+    <footer>
+        &copy; <span id="current-year"></span> CogFlare Demo
+    </footer>
+    <script>
+        // Populate dynamic content
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+        // Populate the current year dynamically
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
