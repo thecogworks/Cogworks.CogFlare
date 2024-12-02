@@ -97,7 +97,12 @@ Add these settings to the **appsettings.json**
 
 To add cache headers to your pages please add the view component in your Master or required page View
 ```razor
-@await Component.InvokeAsync("CacheHeaders")
+@await Component.InvokeAsync(ApplicationConstants.CogFlareCacheHeaders)
+```
+
+Ensure you include the correct using directive at the top of your file:
+```razor
+@using Cogworks.CogFlare.Core.Constants
 ```
 
 By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
