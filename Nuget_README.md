@@ -1,26 +1,17 @@
-<img src="cogflare.png" 
-     alt="Cogworks.CogFlare" 
-     style="float:right;height:150px;width:150px" />
+# CogFlare
 
-<h3 style="font-size:2.7rem;color:#ff">CogFlare</h3>
-
-[![NuGet release](https://img.shields.io/nuget/v/Cogworks.CogFlare.svg)](https://www.nuget.org/packages/Cogworks.CogFlare/)
-![NuGet Downloads](https://img.shields.io/nuget/dt/Cogworks.CogFlare)
+A package that helps automatically purge CloudFlare cache with Umbraco 12-13
 
 ![Built With](https://img.shields.io/badge/Built%20With-.NET%207.0-blue)
 ![Built With](https://img.shields.io/badge/Built%20With-Angular-DD0031?logo=angular&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cache%20Provider-Cloudflare-F38020?logo=cloudflare&logoColor=white)
-
 ![Open Source](https://img.shields.io/badge/Open%20Source-❤-brightgreen)
 ![License](https://img.shields.io/github/license/thecogworks/Cogworks.CogFlare)
 ![GitHub Issues](https://img.shields.io/github/issues/thecogworks/Cogworks.CogFlare)
 ![Status](https://img.shields.io/badge/Status-Stable-success)
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen?logo=github)
 
-
-A package that helps automatically purge CloudFlare cache with Umbraco 12-13
-
-<h2 style="color:plum">Why is CogFlare Needed?</h2>
+## Why is CogFlare Needed?
 
 Most CMS platforms, including Umbraco, are designed to be **dynamic** and, by default, don’t cache full HTML pages. While they handle caching for assets like JavaScript, CSS, and images, HTML is often left uncached because dynamic pages frequently change. This ensures fresh content but comes with a cost: **every request hits the server**, even for unchanged pages, leading to unnecessary server load and slower response times.
 
@@ -32,9 +23,9 @@ This is where CogFlare steps in. The package automatically monitors changes in y
 
 By automating the caching and purging process, CogFlare provides the performance benefits of full-page caching without the complexities of managing it manually.
 
-<h2 style="color:plum">Usage</h2>
+## Usage
 
-<h3 style="color:salmon">Basic Functionality</h2>
+### Basic Functionality
 
 - Automatically purges Cloudflare cache when:
   - Content nodes are **published, unpublished, or deleted**.
@@ -42,13 +33,13 @@ By automating the caching and purging process, CogFlare provides the performance
 - Ability to toggle the package functionality on/off in the settings.
 - Ability to toggle logging on/off in the settings.
 
-<h3 style="color:salmon">Advanced Functionality</h2>
+### Advanced Functionality
 
 - Configure **Key Nodes** in the settings:
   - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
 - Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncachable**.
 
-<h3 style="color:salmon">Backoffice Dashboard</h2>
+### Backoffice Dashboard
 
 - A dashboard has been added to the **Settings** section of the backoffice.
   - Currently, only **Admins** can access it.
@@ -56,19 +47,15 @@ By automating the caching and purging process, CogFlare provides the performance
   - A button to manually trigger a **FULL site cache purge**.
   - Viewing the current configuration for the package.
 
-<h2 style="color:plum">Logs</h2>
+## Logs
 
 - Logs are created whenever:
   - A node eligible for caching is changed.
   - A purge request to Cloudflare is made.
 
-![CogFlare Logs](images/cogflare-logs-1.png)
-
 - Additional logs display the result of the purge request to Cloudflare:
 
-![CogFlare CloudFlare Logs](images/cogflare-logs-2.png)
-
-<h2 style="color:plum">Installation</h2>
+# Installation
 
 Install through dotnet CLI:
 ```c#
@@ -107,7 +94,7 @@ Ensure you include the correct using directive at the top of your file:
 
 By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
 
-<h2 style="color:plum">Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching</h2>
+## Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching
 
 Umbraco Forms include **anti-forgery tokens** by default. These tokens must be unique for each page to ensure forms function correctly. 
 
@@ -115,13 +102,13 @@ However, when implementing **full-page HTML caching**, this can cause issues: ca
 
 This package provides a solution to ensure both caching and forms can coexist seamlessly.
 
-<h3 style="color:salmon">Problem with Caching and Forms</h3>
+### Problem with Caching and Forms
 
 If you use **full-page HTML caching** for a page containing an Umbraco form:
 - The **anti-forgery token** will be cached along with the page's HTML.
 - When users access the page, the token will no longer be unique, causing form submissions to fail.
 
-<h3 style="color:salmon">Workarounds</h3>
+### Workarounds
 
 To resolve this issue, the package offers two options:
 
@@ -156,7 +143,7 @@ Email: admin@admin.com
 Password: 0123456789
 ```
 
-<h2 style="color:plum">License</h2>
+## License
 
 Licensed under the [MIT License](LICENSE.md)
 
