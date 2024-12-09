@@ -12,7 +12,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReadmeFile>Nuget_README.md</PackageReadmeFile>
     <PackageIcon>cogflare.png</PackageIcon>
-    <Version>1.3.12</Version>
+    <Version>1.3.2</Version>
     <PackageProjectUrl>https://github.com/thecogworks/Cogworks.CogFlare</PackageProjectUrl>
     <RepositoryUrl>https://github.com/thecogworks/Cogworks.CogFlare</RepositoryUrl>
     <IncludeSymbols>False</IncludeSymbols>
