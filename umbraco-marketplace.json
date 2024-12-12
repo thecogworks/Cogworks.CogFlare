@@ -1,0 +1,52 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "AuthorDetails": {
+    "Name": "Cogworks",
+    "Description": "A distinguished and longstanding Umbraco Partner",
+    "Url": "https://www.wearecogworks.com",
+    "ImageUrl": "https://cdn.wearecogworks.com/media/q4sabnmh/logo.png",
+    "Contributors": [],
+    "SyncContributorsFromRepository": false
+  },
+  "Category": "Tool Integration",
+  "Description": "A package that helps automatically purge CloudFlare cache",
+  "DiscussionForumUrl": "https://github.com/thecogworks/Cogworks.CogFlare/pulls",
+  "DocumentationUrl": "https://github.com/thecogworks/Cogworks.CogFlare",
+  "IssueTrackerUrl": "https://github.com/thecogworks/Cogworks.CogFlare/issues",
+  "LicenseTypes": [ "Free" ],
+  "PackageType": "Package",
+  "PackagesByAuthor": [],
+  "RelatedPackages": [],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://cms.wearecogworks.com/media/icoenstm/cogflare-dashboard.png",
+      "Caption": "CogFlare Dashboard"
+    },
+    {
+      "ImageUrl": "https://cms.wearecogworks.com/media/hq4fqbv0/cogflare-logs-1.png",
+      "Caption": "CogFlare purge trigger logs"
+    },
+    {
+      "ImageUrl": "https://cms.wearecogworks.com/media/gkojwaj1/cogflare-logs-2.png",
+      "Caption": "CogFlare CloudFlare logs"
+    },
+    {
+      "ImageUrl": "https://cms.wearecogworks.com/media/pnnoc2d1/cogflare.png",
+      "Caption": "CogFlare logo"
+    }
+  ],
+  "Tags": [
+    "cloudflare",
+    "cache",
+    "purge",
+    "cdn",
+    "automation"
+  ],
+  "Title": "Cogworks.CogFlare",
+  "VersionSpecificPackageIds": [
+    {
+      "UmbracoMajorVersion": 12,
+      "PackageId": "Cogworks.CogFlare"
+    }
+  ]
+}
