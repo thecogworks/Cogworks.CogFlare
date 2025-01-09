@@ -147,4 +147,4 @@ Password: 0123456789
 
 Licensed under the [MIT License](LICENSE.md)
 
-&copy; 2024 [Cogworks](https://www.wearecogworks.com/)
+&copy; 2025 [Cogworks](https://www.wearecogworks.com/)

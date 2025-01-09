@@ -8,7 +8,7 @@
     "Contributors": [],
     "SyncContributorsFromRepository": false
   },
-  "Category": "Tool Integration",
+  "Category": "Editor Tools",
   "Description": "A package that helps automatically purge CloudFlare cache",
   "DiscussionForumUrl": "https://github.com/thecogworks/Cogworks.CogFlare/pulls",
   "DocumentationUrl": "https://github.com/thecogworks/Cogworks.CogFlare",
