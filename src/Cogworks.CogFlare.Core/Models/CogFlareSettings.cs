@@ -6,6 +6,7 @@ public record CogFlareSettings
     public string Email { get; init; } = string.Empty;
     public string Endpoint { get; init; } = string.Empty;
     public string KeyNodes { get; init; } = string.Empty;
+    public string KeyParentNodes { get; init; } = string.Empty;
     public string Domain { get; init; } = string.Empty;
     public bool IsEnabled { get; init; }
     public bool EnableLogging { get; init; } = true;

@@ -85,13 +85,40 @@ public class CachePurgeService : ICachePurgeService
             .Append(nodeId)
             .ToList();
 
+        var keyParentNodeRelatedIds = GetKeyParentNodeRelatedIds(nodeId);
+
+        if (keyParentNodeRelatedIds.HasAny())
+        {
+            relatedIds.AddRange(keyParentNodeRelatedIds);
+        }
+
         return relatedIds;
+    }
+
+    private IEnumerable<int> GetKeyParentNodeRelatedIds(int id)
+    {
+        var keyParentNodes = new List<int>();
+        var ancestorsIds = _umbracoContentNodeService.GetAncestorsIdsById(id);
+
+        foreach (var keyParentNode in _cogFlareSettings.KeyParentNodes?.GetNodeIds())
+        {
+            var relatedParentIds = ancestorsIds
+                ?.Where(x => x == keyParentNode)
+                ?.ToList();
+
+            if (relatedParentIds.HasAny())
+            {
+                keyParentNodes.AddRange(relatedParentIds);
+            }
+        }
+
+        return keyParentNodes;
     }
 
     private bool IsKeyNode(int nodeId)
     {
         return _cogFlareSettings
-            .GetKeyNodes()
+            .KeyNodes.GetNodeIds()
             .Contains(nodeId);
     }
 }
