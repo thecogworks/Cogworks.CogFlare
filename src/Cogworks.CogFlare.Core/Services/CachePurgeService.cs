@@ -74,25 +74,25 @@ public class CachePurgeService : ICachePurgeService
 
     private IEnumerable<int> GetRelatedNodeIds(int nodeId, bool isMedia)
     {
-        var relationshipType = isMedia
-            ? RelationTypes.RelatedMediaAlias
-            : RelationTypes.RelatedDocumentAlias;
+        var effectedIds = new List<int> { nodeId };
+        effectedIds.AddRange(GetKeyParentNodeRelatedIds(nodeId));
 
-        var relatedIds = _relationService
-            .GetByChildId(nodeId)
-            .Where(x => x.RelationType.Alias == relationshipType)
-            .Select(x => x.ParentId)
-            .Append(nodeId)
-            .ToList();
+        var relatedIds = new List<int>();
 
-        var keyParentNodeRelatedIds = GetKeyParentNodeRelatedIds(nodeId);
-
-        if (keyParentNodeRelatedIds.HasAny())
+        foreach (var effectedId in effectedIds)
         {
-            relatedIds.AddRange(keyParentNodeRelatedIds);
+            var relationshipType = isMedia
+                ? RelationTypes.RelatedMediaAlias
+                : RelationTypes.RelatedDocumentAlias;
+
+            relatedIds.AddRange(_relationService
+                .GetByChildId(effectedId)
+                .Where(x => x.RelationType.Alias == relationshipType)
+                .Select(x => x.ParentId)
+                .Append(effectedId));
         }
 
-        return relatedIds;
+        return relatedIds.Distinct();
     }
 
     private IEnumerable<int> GetKeyParentNodeRelatedIds(int id)
