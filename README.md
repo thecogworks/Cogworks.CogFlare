@@ -90,6 +90,7 @@ Add these settings to the **appsettings.json**
     "Domain": "https://www.example.com",
     "EnableLogging": true, //optional
     "KeyNodes": "1234, 031089", // optional
+    "KeyParentNodes": "1001",  // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
     "CacheTime": "2592000" // optional => will default to 1 month
   }
@@ -148,6 +149,33 @@ This package includes a feature to **conditionally disable caching** for pages c
   }
 ```
 
+<h2 style="color:plum">App Settings Explained</h2>
+
+Brief explaination on some appsettings
+
+<h3 style="color:salmon">KeyNodes</h3>
+
+A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
+
+<h3 style="color:salmon">KeyParentNodes</h3>
+
+The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages — such as a "News" or "Blog" section that pulls in the latest posts.
+
+When any child page under one of these specified key parent nodes is updated, added, or removed, the system will not only purge the changed page itself, but also any other pages that reference the key parent. This ensures that content listings or summaries (e.g., "Latest News") remain fresh and up to date.
+
+### **Why Use This?**
+
+This feature is especially useful for pages that dynamically reference child content, such as:
+
+- News landing pages
+- Blog indexes
+- Category archives
+- Homepages with latest articles
+
+By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes — preventing stale content from sticking around.
+
+### **Example**
+Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache — keeping your site content consistent.
 
 ## Backoffice User:
 

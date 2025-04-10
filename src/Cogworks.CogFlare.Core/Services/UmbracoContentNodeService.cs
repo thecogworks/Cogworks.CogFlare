@@ -3,6 +3,7 @@
 public interface IUmbracoContentNodeService
 {
     string? GetContentUrlById(int id, bool isMedia = false, bool isRelativeUrl = false);
+    IEnumerable<int> GetAncestorsIdsById(int id);
 }
 
 public class UmbracoContentNodeService : IUmbracoContentNodeService
@@ -45,5 +46,14 @@ public class UmbracoContentNodeService : IUmbracoContentNodeService
         var media = mediaCache!.GetById(id);
 
         return media ?? default;
+    }
+
+    public IEnumerable<int> GetAncestorsIdsById(int id)
+    {
+        var node = GetContentById(id);
+
+        return node?.Ancestors()
+            .Select(x => x.Id)
+            .ToList() ?? Enumerable.Empty<int>();
     }
 }

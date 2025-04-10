@@ -34,7 +34,7 @@ public class CloudFlareCachePurgeApiController : UmbracoAuthorizedJsonController
     public IActionResult GetSettings()
     {
         var keyNodes = _cogFlareSettings
-            .GetKeyNodes()
+            .KeyNodes.GetNodeIds()
             .Select(id => _umbracoContentNodeService.GetContentUrlById(id));
 
         var settings = _cogFlareSettings with
