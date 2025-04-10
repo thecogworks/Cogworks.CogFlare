@@ -74,24 +74,51 @@ public class CachePurgeService : ICachePurgeService
 
     private IEnumerable<int> GetRelatedNodeIds(int nodeId, bool isMedia)
     {
-        var relationshipType = isMedia
-            ? RelationTypes.RelatedMediaAlias
-            : RelationTypes.RelatedDocumentAlias;
+        var effectedIds = new List<int> { nodeId };
+        effectedIds.AddRange(GetKeyParentNodeRelatedIds(nodeId));
 
-        var relatedIds = _relationService
-            .GetByChildId(nodeId)
-            .Where(x => x.RelationType.Alias == relationshipType)
-            .Select(x => x.ParentId)
-            .Append(nodeId)
-            .ToList();
+        var relatedIds = new List<int>();
 
-        return relatedIds;
+        foreach (var effectedId in effectedIds)
+        {
+            var relationshipType = isMedia
+                ? RelationTypes.RelatedMediaAlias
+                : RelationTypes.RelatedDocumentAlias;
+
+            relatedIds.AddRange(_relationService
+                .GetByChildId(effectedId)
+                .Where(x => x.RelationType.Alias == relationshipType)
+                .Select(x => x.ParentId)
+                .Append(effectedId));
+        }
+
+        return relatedIds.Distinct();
+    }
+
+    private IEnumerable<int> GetKeyParentNodeRelatedIds(int id)
+    {
+        var keyParentNodes = new List<int>();
+        var ancestorsIds = _umbracoContentNodeService.GetAncestorsIdsById(id);
+
+        foreach (var keyParentNode in _cogFlareSettings.KeyParentNodes?.GetNodeIds())
+        {
+            var relatedParentIds = ancestorsIds
+                ?.Where(x => x == keyParentNode)
+                ?.ToList();
+
+            if (relatedParentIds.HasAny())
+            {
+                keyParentNodes.AddRange(relatedParentIds);
+            }
+        }
+
+        return keyParentNodes;
     }
 
     private bool IsKeyNode(int nodeId)
     {
         return _cogFlareSettings
-            .GetKeyNodes()
+            .KeyNodes.GetNodeIds()
             .Contains(nodeId);
     }
 }
