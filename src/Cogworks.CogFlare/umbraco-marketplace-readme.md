@@ -2,7 +2,7 @@
 
 A package that helps automatically purge CloudFlare cache with Umbraco 12-13
 
-![Built With](https://img.shields.io/badge/Built%20With-.NET%207.0-blue)
+![Built With](https://img.shields.io/badge/Built%20With-.NET%208.0-blue)
 ![Built With](https://img.shields.io/badge/Built%20With-Angular-DD0031?logo=angular&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cache%20Provider-Cloudflare-F38020?logo=cloudflare&logoColor=white)
 ![Open Source](https://img.shields.io/badge/Open%20Source-❤-brightgreen)
