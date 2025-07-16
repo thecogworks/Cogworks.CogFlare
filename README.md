@@ -92,7 +92,8 @@ Add these settings to the **appsettings.json**
     "KeyNodes": "1234, 031089", // optional
     "KeyParentNodes": "1001",  // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
-    "CacheTime": "2592000" // optional => will default to 1 month
+    "CacheTime": "0", // optional
+    "CacheTimeEdge": "2592000", // optional
   }
 ```
 
@@ -152,6 +153,25 @@ This package includes a feature to **conditionally disable caching** for pages c
 <h2 style="color:plum">App Settings Explained</h2>
 
 Brief explaination on some appsettings
+
+<h3 style="color:salmon">CacheTime</h3>
+
+Set the cache duration (in seconds) for the `Cache-Control` header.
+
+If you set it to `0`, it will use `no-cache, no-store, must-revalidate`, which effectively disables browser caching.  
+
+This is recommended if you want to ensure browsers always fetch the latest version of a page.
+
+
+<h3 style="color:salmon">CacheTimeEdge</h3>
+
+Set how long (in seconds) Cloudflare should cache the response at the edge (i.e. on their servers).  
+
+The value you enter here will be used for the `Edge-Cache` header.  
+
+This only affects Cloudflare's edge caching — it doesn’t control browser caching.  
+
+Useful for reducing load on your origin server while keeping things fast for end users.
 
 <h3 style="color:salmon">KeyNodes</h3>
 

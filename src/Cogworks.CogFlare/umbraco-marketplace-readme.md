@@ -140,6 +140,24 @@ This package includes a feature to **conditionally disable caching** for pages c
 
 Brief explaination on some appsettings
 
+### CacheTime
+
+Set the cache duration (in seconds) for the `Cache-Control` header.
+
+If you set it to `0`, it will use `no-cache, no-store, must-revalidate`, which effectively disables browser caching.  
+
+This is recommended if you want to ensure browsers always fetch the latest version of a page.
+
+### CacheTimeEdge
+
+Set how long (in seconds) Cloudflare should cache the response at the edge (i.e. on their servers).  
+
+The value you enter here will be used for the `Edge-Cache` header.  
+
+This only affects Cloudflare's edge caching — it doesn’t control browser caching.  
+
+Useful for reducing load on your origin server while keeping things fast for end users.
+
 ### KeyNodes
 
 A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
