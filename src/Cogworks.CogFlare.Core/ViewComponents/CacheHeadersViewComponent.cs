@@ -22,12 +22,17 @@ public class CacheHeadersViewComponent : ViewComponent
 
         if (IsCacheable())
         {
-            HttpContext.Response.Headers["Cache-Control"] = $"public, max-age={_cogFlareSettings.CacheTime}";
-            HttpContext.Response.Headers["Edge-Control"] = $"cache-maxage={_cogFlareSettings.CacheTime}s";
-        }
-        else
-        {
-            HttpContext.Response.Headers["Cache-Control"] = "private, no-cache, must-revalidate";
+            if (_cogFlareSettings.CacheTimeEdge.HasValue())
+            {
+                HttpContext.Response.Headers["Edge-Control"] = $"cache-maxage={_cogFlareSettings.CacheTimeEdge}s";
+            }
+
+            if (_cogFlareSettings.CacheTime.HasValue())
+            {
+                HttpContext.Response.Headers["Cache-Control"] = _cogFlareSettings.CacheTime.Equals("0")
+                    ? "no-cache, no-store, must-revalidate"
+                    : $"public, max-age={_cogFlareSettings.CacheTime}";
+            }
         }
 
         return Content(string.Empty);

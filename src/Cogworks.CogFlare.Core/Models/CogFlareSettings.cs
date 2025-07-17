@@ -11,7 +11,8 @@ public record CogFlareSettings
     public bool IsEnabled { get; init; }
     public bool EnableLogging { get; init; } = true;
     public string BlockAliases { get; init; } = string.Empty;
-    public string CacheTime { get; init; } = TimeConstants.OneMonth;
+    public string CacheTime { get; init; } = string.Empty;
+    public string CacheTimeEdge { get; init; } = string.Empty;
     public bool IsValid => ApiKey.HasValue() && Email.HasValue() && Endpoint.HasValue();
 
     public IEnumerable<int> GetKeyNodes()
