@@ -138,7 +138,20 @@ This package includes a feature to **conditionally disable caching** for pages c
 
 ## App Settings Explained
 
-Brief explaination on some appsettings
+Brief explanation on some appsettings
+
+### AuthenticationMethod
+
+The **AuthenticationMethod** determines the security headers which are sent to Cloudflare.  
+
+When the value is set to "Bearer", the following header is sent:
+
+Authorization: Bearer [cloudflare_api_token]
+
+For backwards compatibility, when the value is set to "Email" (or anything other than "Bearer"), the following headers are sent:
+
+X-Auth-Email: [cloudeflare_email]
+X-Auth-Key: [cloudflare_api_key]
 
 ### KeyNodes
 

@@ -1,4 +1,6 @@
-﻿namespace Cogworks.CogFlare.Core.Services;
+﻿using System.Text;
+
+namespace Cogworks.CogFlare.Core.Services;
 
 public interface ICloudFlareCachePurgeService
 {
@@ -49,9 +51,17 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
 
         var request = new HttpRequestMessage(HttpMethod.Post, _cogFlareSettings.Endpoint);
 
-        request.Headers.Add("X-Auth-Email", _cogFlareSettings.Email);
-        request.Headers.Add("X-Auth-Key", _cogFlareSettings.ApiKey);
-        request.Content = new StringContent(JsonSerializer.Serialize(purgeSettings));
+        if (_cogFlareSettings.AuthenticationMethod.ToLowerInvariant() == "email")
+        {
+            request.Headers.Add("X-Auth-Email", _cogFlareSettings.Email);
+            request.Headers.Add("X-Auth-Key", _cogFlareSettings.ApiKey);
+            request.Content = new StringContent(JsonSerializer.Serialize(purgeSettings));
+        }
+        else
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _cogFlareSettings.ApiKey);
+            request.Content = new StringContent(JsonSerializer.Serialize(purgeSettings), Encoding.UTF8, "application/json");
+        }
 
         try
         {
