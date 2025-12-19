@@ -3,6 +3,7 @@
 public record CogFlareSettings
 {
     public string ApiKey { get; init; } = string.Empty;
+    public string ApiToken { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public string Endpoint { get; init; } = string.Empty;
     public string KeyNodes { get; init; } = string.Empty;
