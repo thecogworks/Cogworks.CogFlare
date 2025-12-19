@@ -14,6 +14,7 @@ public record CogFlareSettings
     public string CacheTime { get; init; } = string.Empty;
     public string CacheTimeEdge { get; init; } = string.Empty;
     public bool IsValid => ApiKey.HasValue() && Email.HasValue() && Endpoint.HasValue();
+    public string AuthenticationMethod { get; init; } = string.Empty;
 
     public IEnumerable<int> GetKeyNodes()
     {

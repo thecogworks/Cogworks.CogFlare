@@ -31,6 +31,7 @@
                         vm.endpoint = response.data.Endpoint;
                         vm.email = response.data.Email;
                         vm.apiKey = response.data.ApiKey;
+                        vm.authenticationMethod = response.data.AuthenticationMethod;
                     }
                 );
         };
