@@ -49,9 +49,11 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
 
         var request = new HttpRequestMessage(HttpMethod.Post, _cogFlareSettings.Endpoint);
 
-        if (_cogFlareSettings.AuthenticationMethod.ToLowerInvariant() == "bearer")
+        if (_cogFlareSettings.AuthenticationMethod.HasValue() 
+            && _cogFlareSettings.AuthenticationMethod.InvariantEquals(ApplicationConstants.BearerLabel) 
+            && _cogFlareSettings.ApiToken.HasValue())
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _cogFlareSettings.ApiToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue(ApplicationConstants.BearerLabel, _cogFlareSettings.ApiToken);
             request.Content = new StringContent(JsonSerializer.Serialize(purgeSettings), Encoding.UTF8, "application/json");
         }
         else
