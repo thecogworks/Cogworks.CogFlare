@@ -85,6 +85,7 @@ Add these settings to the **appsettings.json**
   "CogFlareSettings": {
     "IsEnabled": true,
     "ApiKey": "xxx",
+    "ApiToken": "xxx",
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
@@ -92,8 +93,7 @@ Add these settings to the **appsettings.json**
     "KeyNodes": "1234, 031089", // optional
     "KeyParentNodes": "1001",  // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
-    "CacheTime": "0", // optional
-    "CacheTimeEdge": "2592000", // optional
+    "CacheTime": "2592000" // optional => will default to 1 month
   }
 ```
 
@@ -153,6 +153,25 @@ This package includes a feature to **conditionally disable caching** for pages c
 <h2 style="color:plum">App Settings Explained</h2>
 
 Brief explaination on some appsettings
+
+<h2 style="color:salmon">AuthenticationMethod</h2>
+
+The **AuthenticationMethod** determines the security headers which are sent to Cloudflare.  
+
+When the value is set to "Bearer", the following header is sent:
+
+Authorization: Bearer [cloudflare_api_token]
+
+For backwards compatibility, when the value is set to "Email" (or anything other than "Bearer"), the following headers are sent:
+
+X-Auth-Email: [cloudeflare_email]
+<br/>
+X-Auth-Key: [cloudflare_api_key]
+
+<h2 style="color:salmon">ApiToken</h2>
+
+When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the CloudFalre dashboard.
+
 
 <h3 style="color:salmon">CacheTime</h3>
 

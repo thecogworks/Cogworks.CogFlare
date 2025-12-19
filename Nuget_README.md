@@ -72,6 +72,7 @@ Add these settings to the **appsettings.json**
   "CogFlareSettings": {
     "IsEnabled": true,
     "ApiKey": "xxx",
+    "ApiToken": "xxx",
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
@@ -152,6 +153,10 @@ For backwards compatibility, when the value is set to "Email" (or anything other
 
 X-Auth-Email: [cloudeflare_email]
 X-Auth-Key: [cloudflare_api_key]
+
+### ApiToken
+
+When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the CloudFalre dashboard.
 
 ### KeyNodes
 
