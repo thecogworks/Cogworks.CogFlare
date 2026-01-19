@@ -35,10 +35,30 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
         var purgeSettings = new PurgeSettings
         {
             PurgeEverything = purgeEverything,
-            Files = purgeEverything ? null : urls
         };
 
-        return await SendPurgeRequest(purgeSettings, cancellationToken);
+        if (purgeEverything == true)
+        {
+            purgeSettings.Files = null;
+
+            return await SendPurgeRequest(purgeSettings, cancellationToken);
+        }
+        else
+        {
+            var batchSize = _cogFlareSettings.UrlBatchSize;
+            var purgesSuccessful = false;
+
+            for (var itemsProcessed = 0; itemsProcessed < urls.Count(); itemsProcessed += _cogFlareSettings.UrlBatchSize)
+            {
+                purgeSettings.Files = urls
+                    .Skip(itemsProcessed)
+                    .Take(batchSize);
+
+                purgesSuccessful = await SendPurgeRequest(purgeSettings, cancellationToken);
+            }
+
+            return purgesSuccessful;
+        }
     }
 
     private async Task<bool> SendPurgeRequest(PurgeSettings purgeSettings, CancellationToken cancellationToken)
@@ -67,7 +87,11 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
         {
             var response = await client.SendAsync(request, cancellationToken);
 
-            _logService.Log($"CloudFlare response for purging: {response.ReasonPhrase}");
+            var urlsLogMessage = purgeSettings.Files.HasAny()
+                ? $"({purgeSettings.Files.Count()}) URLs processed -"
+                : string.Empty;
+
+            _logService.Log($"{urlsLogMessage}CloudFlare response for purging: {response.ReasonPhrase}");
 
             return response.IsSuccessStatusCode;
         }

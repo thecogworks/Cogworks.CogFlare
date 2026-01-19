@@ -16,6 +16,7 @@ public record CogFlareSettings
     public string CacheTimeEdge { get; init; } = string.Empty;
     public bool IsValid => ApiKey.HasValue() && Email.HasValue() && Endpoint.HasValue();
     public string AuthenticationMethod { get; init; } = string.Empty;
+    public int UrlBatchSize { get; init; } = 45;
 
     public IEnumerable<int> GetKeyNodes()
     {
