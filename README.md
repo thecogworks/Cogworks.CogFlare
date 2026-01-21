@@ -90,6 +90,7 @@ Add these settings to the **appsettings.json**
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
     "EnableLogging": true, //optional
+    "PurgeBatchSize": 45, // optional => split URL lists into batches (default: 45)
     "KeyNodes": "1234, 031089", // optional
     "KeyParentNodes": "1001",  // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
@@ -215,6 +216,15 @@ By using key parent nodes, you ensure that all related cached content is correct
 
 ### **Example**
 Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache — keeping your site content consistent.
+
+## Batch Purging (new)
+
+To support Cloudflare plan limits (many plans limit purge requests to around 50 URLs per request), CogFlare now splits large purge lists into smaller batches and issues multiple purge requests as needed. This prevents Cloudflare rejecting large purge requests and helps ensure purges complete successfully.
+
+- **Default batch size:** 45 URLs per request (configurable).
+- **How to configure:** add the `PurgeBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
+
+ 
 
 ## Backoffice User:
 
