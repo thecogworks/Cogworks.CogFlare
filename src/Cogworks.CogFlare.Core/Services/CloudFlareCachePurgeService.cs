@@ -46,18 +46,20 @@ public class CloudFlareCachePurgeService : ICloudFlareCachePurgeService
         else
         {
             var batchSize = _cogFlareSettings.UrlBatchSize;
-            var purgesSuccessful = false;
+            var tasks = new List<Task<bool>>();
 
-            for (var itemsProcessed = 0; itemsProcessed < urls.Count(); itemsProcessed += _cogFlareSettings.UrlBatchSize)
+            for (var itemsProcessed = 0; itemsProcessed < urls.Count(); itemsProcessed += batchSize)
             {
                 purgeSettings.Files = urls
                     .Skip(itemsProcessed)
                     .Take(batchSize);
-
-                purgesSuccessful = await SendPurgeRequest(purgeSettings, cancellationToken);
+                
+                tasks.Add(SendPurgeRequest(purgeSettings, cancellationToken));
             }
+            
+            var results = await Task.WhenAll(tasks);
 
-            return purgesSuccessful;
+            return results.All(batchSucceeded => batchSucceeded);
         }
     }
 
