@@ -74,25 +74,30 @@ public class CachePurgeService : ICachePurgeService
 
     private IEnumerable<int> GetRelatedNodeIds(int nodeId, bool isMedia)
     {
-        var effectedIds = new List<int> { nodeId };
-        effectedIds.AddRange(GetKeyParentNodeRelatedIds(nodeId));
+        var relationshipType = isMedia
+            ? RelationTypes.RelatedMediaAlias
+            : RelationTypes.RelatedDocumentAlias;
 
-        var relatedIds = new List<int>();
+        var affectedIds = new HashSet<int> { nodeId };
+        affectedIds.UnionWith(GetKeyParentNodeRelatedIds(nodeId));
 
-        foreach (var effectedId in effectedIds)
+        var relatedIds = new HashSet<int>(affectedIds);
+
+        foreach (var affectedId in affectedIds)
         {
-            var relationshipType = isMedia
-                ? RelationTypes.RelatedMediaAlias
-                : RelationTypes.RelatedDocumentAlias;
+            var ids = _cogFlareSettings.EnableBidirectionalRelations 
+                ? _relationService
+                    .GetByParentOrChildId(affectedId, relationshipType)
+                    .Select(x => x.ParentId == affectedId ? x.ChildId : x.ParentId)
+                : _relationService
+                    .GetByChildId(affectedId)
+                    .Where(x => x.RelationType.Alias == relationshipType)
+                    .Select(x => x.ParentId).Append(affectedId);
 
-            relatedIds.AddRange(_relationService
-                .GetByChildId(effectedId)
-                .Where(x => x.RelationType.Alias == relationshipType)
-                .Select(x => x.ParentId)
-                .Append(effectedId));
+            relatedIds.UnionWith(ids);
         }
 
-        return relatedIds.Distinct();
+        return relatedIds;
     }
 
     private IEnumerable<int> GetKeyParentNodeRelatedIds(int id)
