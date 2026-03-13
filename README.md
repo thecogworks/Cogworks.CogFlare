@@ -32,6 +32,16 @@ This is where CogFlare steps in. The package automatically monitors changes in y
 
 By automating the caching and purging process, CogFlare provides the performance benefits of full-page caching without the complexities of managing it manually.
 
+<h2 style="color:plum">How It Works Under the Hood</h2>
+
+CogFlare makes purge decisions using two mechanisms working together:
+
+1. **Umbraco's Relation Service** — When a content change is detected, CogFlare queries Umbraco's built-in relation service to discover which pages reference the changed node and, optionally, which pages that node itself references. This means purge decisions are based on real, tracked relationships in the CMS rather than guesswork or pattern matching.
+
+2. **Configurable appsettings** — Behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the new bidirectional relations mode — all without changing code.
+
+The combination of these two mechanisms means CogFlare can make precise, site-specific decisions: using Umbraco's own data to identify which URLs are stale, and using your configuration to control how broadly that purge should spread.
+
 <h2 style="color:plum">Usage</h2>
 
 <h3 style="color:salmon">Basic Functionality</h2>
@@ -90,11 +100,12 @@ Add these settings to the **appsettings.json**
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
     "EnableLogging": true, //optional
-    "PurgeBatchSize": 45, // optional => split URL lists into batches (default: 45)
-    "KeyNodes": "1234, 031089", // optional
+    "UrlBatchSize": 45, // optional => split URL lists into batches (default: 45)
+    "KeyNodes": "1234,031089", // optional
     "KeyParentNodes": "1001",  // optional
-    "BlockAliases": "formBlock, otherFormBlock", // optional
-    "CacheTime": "2592000" // optional => will default to 1 month
+    "BlockAliases": "formBlock,otherFormBlock", // optional
+    "CacheTime": "2592000", // optional => defaults to 1 month
+    "EnableBidirectionalRelations": false // optional => when true purges relations in both directions
   }
 ```
 
@@ -171,7 +182,12 @@ X-Auth-Key: [cloudflare_api_key]
 
 <h2 style="color:salmon">ApiToken</h2>
 
-When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the CloudFalre dashboard.
+When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the Cloudflare dashboard.
+
+
+<h2 style="color:salmon">EnableBidirectionalRelations</h2>
+
+When `EnableBidirectionalRelations` is `true`, CogFlare resolves content relations in both directions. When a page changes the package will purge the changed page, pages that reference it, and pages that it references. Leave this `false` (default) unless your site uses content pickers or templates where referenced content also displays aggregates (for example, author pages that list or summarise articles).
 
 
 <h3 style="color:salmon">CacheTime</h3>
@@ -221,8 +237,8 @@ Let’s say you have a page with ID 1242 called "News", and it lists recent news
 
 To support Cloudflare plan limits (many plans limit purge requests to around 50 URLs per request), CogFlare now splits large purge lists into smaller batches and issues multiple purge requests as needed. This prevents Cloudflare rejecting large purge requests and helps ensure purges complete successfully.
 
-- **Default batch size:** 45 URLs per request (configurable).
-- **How to configure:** add the `PurgeBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
+• **Default batch size:** 45 URLs per request (configurable).
+• **How to configure:** add the `UrlBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
 
  
 
