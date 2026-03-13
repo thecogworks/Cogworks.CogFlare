@@ -1,8 +1,10 @@
 # CogFlare
 
-A package that helps automatically purge CloudFlare cache with Umbraco 12-13
+A package that helps automatically purge Cloudflare cache with Umbraco 12-13
 
-![Built With](https://img.shields.io/badge/Built%20With-.NET%208.0-blue)
+[![NuGet release](https://img.shields.io/nuget/v/Cogworks.CogFlare.svg)](https://www.nuget.org/packages/Cogworks.CogFlare/)
+![NuGet Downloads](https://img.shields.io/nuget/dt/Cogworks.CogFlare)
+![Built With](https://img.shields.io/badge/Built%20With-.NET%207.0-blue)
 ![Built With](https://img.shields.io/badge/Built%20With-Angular-DD0031?logo=angular&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cache%20Provider-Cloudflare-F38020?logo=cloudflare&logoColor=white)
 ![Open Source](https://img.shields.io/badge/Open%20Source-❤-brightgreen)
@@ -13,7 +15,7 @@ A package that helps automatically purge CloudFlare cache with Umbraco 12-13
 
 ## Why is CogFlare Needed?
 
-Most CMS platforms, including Umbraco, are designed to be **dynamic** and, by default, don’t cache full HTML pages. While they handle caching for assets like JavaScript, CSS, and images, HTML is often left uncached because dynamic pages frequently change. This ensures fresh content but comes with a cost: **every request hits the server**, even for unchanged pages, leading to unnecessary server load and slower response times.
+Most CMS platforms, including Umbraco, are designed to be **dynamic** and, by default, don't cache full HTML pages. While they handle caching for assets like JavaScript, CSS, and images, HTML is often left uncached because dynamic pages frequently change. This ensures fresh content but comes with a cost: **every request hits the server**, even for unchanged pages, leading to unnecessary server load and slower response times.
 
 **CogFlare** solves this problem by integrating Umbraco with **Cloudflare**, allowing you to leverage full-page HTML caching through their CDN. While Cloudflare can efficiently cache and serve HTML, the challenge lies in knowing when to purge cached content. Without proper purging, outdated or incorrect content may be served to users.
 
@@ -23,6 +25,18 @@ This is where CogFlare steps in. The package automatically monitors changes in y
 
 By automating the caching and purging process, CogFlare provides the performance benefits of full-page caching without the complexities of managing it manually.
 
+## How It Works Under the Hood
+
+CogFlare makes purge decisions using two mechanisms working together:
+
+1. **Umbraco's Relation Service**: when a content change is detected, CogFlare queries Umbraco's built-in relation service to discover which pages reference the changed node and, optionally, which pages that node itself references. This means purge decisions are based on real, tracked relationships in the CMS rather than guesswork or pattern matching.
+
+2. **Umbraco URL aliases**: CogFlare reads the built-in `umbracoUrlAlias` property on each node. If a page has alternate URL aliases defined, all of those URLs are included in the purge request automatically alongside the primary URL.
+
+3. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the bidirectional relations mode, all without changing code.
+
+The combination of these mechanisms means CogFlare can make precise, site-specific decisions: using Umbraco's own data to identify which URLs are stale, and using your configuration to control how broadly that purge should spread.
+
 ## Usage
 
 ### Basic Functionality
@@ -30,6 +44,7 @@ By automating the caching and purging process, CogFlare provides the performance
 - Automatically purges Cloudflare cache when:
   - Content nodes are **published, unpublished, or deleted**.
   - Media items are **saved**.
+- When purging a page, CogFlare automatically checks for any **Umbraco URL aliases** (`umbracoUrlAlias`) defined on the node and purges those URLs as well as the primary URL. No configuration is required; this is handled automatically.
 - Ability to toggle the package functionality on/off in the settings.
 - Ability to toggle logging on/off in the settings.
 
@@ -37,7 +52,7 @@ By automating the caching and purging process, CogFlare provides the performance
 
 - Configure **Key Nodes** in the settings:
   - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
-- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncachable**.
+- Blocklist blocks that you don't want to cache by specifying their aliases, with the **ability to automatically make form pages uncacheable**.
 
 ### Backoffice Dashboard
 
@@ -52,40 +67,40 @@ By automating the caching and purging process, CogFlare provides the performance
 - Logs are created whenever:
   - A node eligible for caching is changed.
   - A purge request to Cloudflare is made.
+- Additional logs display the result of the purge request to Cloudflare.
 
-- Additional logs display the result of the purge request to Cloudflare:
-
-# Installation
+## Installation
 
 Install through dotnet CLI:
-```c#
+```
 dotnet add package Cogworks.CogFlare
 ```
 
 Or the NuGet Package Manager:
-```c#
+```
 Install-Package Cogworks.CogFlare
 ```
 
-Add these settings to the **appsettings.json**
-```js
-  "CogFlareSettings": {
-    "IsEnabled": true,
-    "ApiKey": "xxx",
-    "ApiToken": "xxx",
-    "Email": "xxx@xxx.com",
-    "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
-    "Domain": "https://www.example.com",
-    "EnableLogging": true, //optional
-    "PurgeBatchSize": 45, // optional => split URL lists into batches (default: 45)
-    "KeyNodes": "1234, 031089", // optional
-    "KeyParentNodes": "1001",  // optional
-    "BlockAliases": "formBlock, otherFormBlock", // optional
-    "CacheTime": "2592000" // optional => will default to 1 month
-  }
+Add these settings to the **appsettings.json**:
+```json
+"CogFlareSettings": {
+  "IsEnabled": true,
+  "ApiKey": "xxx",
+  "ApiToken": "xxx",
+  "Email": "xxx@xxx.com",
+  "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
+  "Domain": "https://www.example.com",
+  "EnableLogging": true,
+  "UrlBatchSize": 45,
+  "KeyNodes": "1234,031089",
+  "KeyParentNodes": "1001",
+  "BlockAliases": "formBlock,otherFormBlock",
+  "CacheTime": "2592000",
+  "EnableBidirectionalRelations": false
+}
 ```
 
-To add cache headers to your pages please add the view component in your Master or required page View
+To add cache headers to your pages, add the view component in your master or required page view:
 ```razor
 @await Component.InvokeAsync(ApplicationConstants.CogFlareCacheHeaders)
 ```
@@ -95,11 +110,11 @@ Ensure you include the correct using directive at the top of your file:
 @using Cogworks.CogFlare.Core.Constants
 ```
 
-By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
+By default the cache time will be set to 1 month. This can be overridden in the CogFlare Settings.
 
 ## Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching
 
-Umbraco Forms include **anti-forgery tokens** by default. These tokens must be unique for each page to ensure forms function correctly. 
+Umbraco Forms include **anti-forgery tokens** by default. These tokens must be unique for each page to ensure forms function correctly.
 
 However, when implementing **full-page HTML caching**, this can cause issues: cached pages will reuse the same anti-forgery token, breaking the forms on those pages.
 
@@ -115,49 +130,68 @@ If you use **full-page HTML caching** for a page containing an Umbraco form:
 
 To resolve this issue, the package offers two options:
 
-### **Option 1: Disable Anti-Forgery Tokens**
+#### Option 1: Disable Anti-Forgery Tokens
+
 You can **disable anti-forgery tokens** for the affected pages:
 1. This allows the page to remain cached while keeping the form functional.
 2. **Caution**: Disabling anti-forgery tokens may reduce the security of form submissions.
 
-### **Option 2: Use Blocklist Aliases to Disable Caching for Specific Pages**
+#### Option 2: Use Blocklist Aliases to Disable Caching for Specific Pages
+
 This package includes a feature to **conditionally disable caching** for pages containing specific blocks, such as forms, to avoid the anti-forgery token issue.
 
 1. **How It Works**:
-   - In the `CogFlareSettings` in the appsettings, you can provide a **blocklist alias** (e.g., a block alias for the Umbraco form or any other block you don’t want to cache).
+   - In the `CogFlareSettings` in the appsettings, you can provide a **blocklist alias** (e.g., a block alias for the Umbraco form or any other block you don't want to cache).
    - When rendering the page, the package checks for the presence of any of the specified block aliases.
    - If the page includes a block with one of these aliases, `private, no-cache, must-revalidate` will be set for the page, effectively disabling caching for that page.
 
-2. **Configuration**:
-   Add your `BlockAliases` to the `CogFlareSettings`:
-```js
-  "CogFlareSettings": {
-    ...
-    ...
-    "BlockAliases": "formBlock, otherFormBlock"
-  }
+2. **Configuration**: add your `BlockAliases` to `CogFlareSettings`:
+```json
+"CogFlareSettings": {
+  "BlockAliases": "formBlock,otherFormBlock"
+}
 ```
 
 ## App Settings Explained
 
-Brief explanation on some appsettings
+Brief explanation on some appsettings.
 
 ### AuthenticationMethod
 
-The **AuthenticationMethod** determines the security headers which are sent to Cloudflare.  
+The **AuthenticationMethod** determines the security headers which are sent to Cloudflare.
 
-When the value is set to "Bearer", the following header is sent:
+When the value is set to `"Bearer"`, the following header is sent:
 
+```
 Authorization: Bearer [cloudflare_api_token]
+```
 
-For backwards compatibility, when the value is set to "Email" (or anything other than "Bearer"), the following headers are sent:
+For backwards compatibility, when the value is set to `"Email"` (or anything other than `"Bearer"`), the following headers are sent:
 
-X-Auth-Email: [cloudeflare_email]
+```
+X-Auth-Email: [cloudflare_email]
 X-Auth-Key: [cloudflare_api_key]
+```
 
 ### ApiToken
 
-When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the CloudFalre dashboard.
+When using the `"Bearer"` authentication method you will need to set an API Token. This is a different value to the API Key and will require you to generate one in the Cloudflare dashboard.
+
+### EnableBidirectionalRelations
+
+When `EnableBidirectionalRelations` is `true`, CogFlare resolves content relations in both directions. When a page changes, the package will purge the changed page, pages that reference it, and pages that it references. Leave this `false` (default) unless your site uses content pickers or templates where referenced content also displays aggregates (for example, author pages that list or summarise articles).
+
+### CacheTime
+
+Set the cache duration (in seconds) for the `Cache-Control` header.
+
+If you set it to `0`, it will use `no-cache, no-store, must-revalidate`, which effectively disables browser caching. This is recommended if you want to ensure browsers always fetch the latest version of a page.
+
+### CacheTimeEdge
+
+Set how long (in seconds) Cloudflare should cache the response at the edge (i.e. on their servers). The value you enter here will be used for the `Edge-Cache` header.
+
+This only affects Cloudflare's edge caching; it does not control browser caching. Useful for reducing load on your origin server while keeping things fast for end users.
 
 ### KeyNodes
 
@@ -165,11 +199,11 @@ A **Key Node** is any content node that triggers a **FULL site cache purge** whe
 
 ### KeyParentNodes
 
-The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages — such as a "News" or "Blog" section that pulls in the latest posts.
+The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages, such as a "News" or "Blog" section that pulls in the latest posts.
 
 When any child page under one of these specified key parent nodes is updated, added, or removed, the system will not only purge the changed page itself, but also any other pages that reference the key parent. This ensures that content listings or summaries (e.g., "Latest News") remain fresh and up to date.
 
-#### **Why Use This?**
+#### Why Use This?
 
 This feature is especially useful for pages that dynamically reference child content, such as:
 
@@ -178,26 +212,21 @@ This feature is especially useful for pages that dynamically reference child con
 - Category archives
 - Homepages with latest articles
 
-By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes — preventing stale content from sticking around.
+By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes, preventing stale content from sticking around.
 
-#### **Example**
-Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache — keeping your site content consistent.
+#### Example
 
-### Batch Purging (new)
+Let's say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache, keeping your site content consistent.
 
-CogFlare now splits large URL purge lists into smaller batches to respect Cloudflare limits (many plans allow up to 50 URLs per purge request). The default batch size is 45 URLs, which is configurable via the `PurgeBatchSize` setting in `CogFlareSettings`.
+### Batch Purging
 
- 
+To support Cloudflare plan limits (many plans limit purge requests to around 50 URLs per request), CogFlare splits large purge lists into smaller batches and issues multiple purge requests as needed. This prevents Cloudflare rejecting large purge requests and helps ensure purges complete successfully.
 
-## Backoffice User:
-
-```sh
-Email: admin@admin.com
-Password: 0123456789
-```
+- **Default batch size:** 45 URLs per request (configurable).
+- **How to configure:** add the `UrlBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
 
 ## License
 
 Licensed under the [MIT License](LICENSE.md)
 
-&copy; 2025 [Cogworks](https://www.wearecogworks.com/)
+Copyright 2026 [Cogworks](https://www.wearecogworks.com/)

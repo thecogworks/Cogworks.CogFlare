@@ -152,6 +152,24 @@ This document describes every property on the `CogFlareSettings` configuration r
 
 ---
 
+## Built-in behaviour (no configuration required)
+
+### URL alias purging (`umbracoUrlAlias`)
+
+Umbraco allows editors to define alternate URL aliases on any content node via the built-in `umbracoUrlAlias` property. For example, a page whose primary URL is `/about-us` might also be reachable at `/about`.
+
+CogFlare automatically reads this property whenever a node is purged. If any aliases are present, each alias URL is added to the purge request alongside the primary URL. No configuration is needed; this is always active as long as the property exists on the node.
+
+**Example**
+
+A page has:
+- Primary URL: `/about-us`
+- `umbracoUrlAlias`: `about`
+
+When that page is published or saved, CogFlare sends a purge request covering both `/about-us` and `/about`.
+
+---
+
 ## Notes on defaults vs model
 - The `CogFlareSettings` record initialises string properties to `string.Empty`; runtime behaviour may treat some empty values as meaningful defaults (for example, `CacheTime` falls back to 1 month if empty). Always verify runtime behaviour in your environment.
 

@@ -38,7 +38,9 @@ CogFlare makes purge decisions using two mechanisms working together:
 
 1. **Umbraco's Relation Service**: when a content change is detected, CogFlare queries Umbraco's built-in relation service to discover which pages reference the changed node and, optionally, which pages that node itself references. This means purge decisions are based on real, tracked relationships in the CMS rather than guesswork or pattern matching.
 
-2. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the new bidirectional relations mode, all without changing code.
+2. **Umbraco URL aliases**: CogFlare reads the built-in `umbracoUrlAlias` property on each node. If a page has alternate URL aliases defined, all of those URLs are included in the purge request automatically alongside the primary URL.
+
+3. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the bidirectional relations mode, all without changing code.
 
 The combination of these two mechanisms means CogFlare can make precise, site-specific decisions: using Umbraco's own data to identify which URLs are stale, and using your configuration to control how broadly that purge should spread.
 
@@ -49,6 +51,7 @@ The combination of these two mechanisms means CogFlare can make precise, site-sp
 - Automatically purges Cloudflare cache when:
   - Content nodes are **published, unpublished, or deleted**.
   - Media items are **saved**.
+- When purging a page, CogFlare automatically checks for any **Umbraco URL aliases** (`umbracoUrlAlias`) defined on the node and purges those URLs as well as the primary URL. No configuration is required; this is handled automatically.
 - Ability to toggle the package functionality on/off in the settings.
 - Ability to toggle logging on/off in the settings.
 
@@ -253,4 +256,4 @@ Password: 0123456789
 
 Licensed under the [MIT License](LICENSE.md)
 
-&copy; 2025 [Cogworks](https://www.wearecogworks.com/)
+&copy; 2026 [Cogworks](https://www.wearecogworks.com/)
