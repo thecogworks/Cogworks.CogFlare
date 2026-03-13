@@ -2,6 +2,7 @@
 
 public class ExternalCachePurgeComponent : 
     INotificationAsyncHandler<ContentPublishedNotification>,
+    INotificationAsyncHandler<ContentPublishingNotification>,
     INotificationAsyncHandler<ContentDeletedNotification>,
     INotificationAsyncHandler<ContentUnpublishingNotification>,
     INotificationAsyncHandler<MediaSavedNotification>
@@ -39,5 +40,24 @@ public class ExternalCachePurgeComponent :
         await _cachePurgeService.PurgeExternalCacheAsync(notification.SavedEntities.Select(x => x.Id),
             cancellationToken,
             NotificationConstants.Saved,true);
+    }
+
+    public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken)
+    {
+
+        var contentWithChangedNames = notification.PublishedEntities
+            .Where(content => content.IsPropertyDirty("Name"))
+            .Select(content => content.Id)
+            .ToList();
+
+        if (!contentWithChangedNames.HasAny())
+        {
+            return;
+        }
+
+        await _cachePurgeService.PurgeExternalCacheAsync(contentWithChangedNames,
+            cancellationToken,
+            NotificationConstants.Publishing,
+            singleUrlPurge:true);
     }
 }

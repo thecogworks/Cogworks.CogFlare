@@ -2,7 +2,11 @@
 
 public interface ICachePurgeService
 {
-    Task PurgeExternalCacheAsync(IEnumerable<int> ids, CancellationToken cancellationToken, string notificationLabel,
+    Task PurgeExternalCacheAsync(
+        IEnumerable<int> ids, 
+        CancellationToken cancellationToken, 
+        string notificationLabel,
+        bool singleUrlPurge = false, 
         bool isMedia = false);
 }
 
@@ -32,6 +36,7 @@ public class CachePurgeService : ICachePurgeService
         IEnumerable<int> ids,
         CancellationToken cancellationToken,
         string notificationLabel,
+        bool singleUrlPurge = false,
         bool isMedia = false)
     {
         foreach (var id in ids)
@@ -45,7 +50,9 @@ public class CachePurgeService : ICachePurgeService
                 return;
             }
 
-            var relatedIds = GetRelatedNodeIds(id, isMedia);
+            var relatedIds = singleUrlPurge 
+                ? [id]
+                : GetRelatedNodeIds(id, isMedia);
 
             if (relatedIds.Any(IsKeyNode))
             {
@@ -56,20 +63,44 @@ public class CachePurgeService : ICachePurgeService
                 return;
             }
 
-            var urlsToPurge = relatedIds.Select(relatedId =>
-                {
-                    var url = _umbracoContentNodeService.GetContentUrlById(relatedId, isMedia,
-                        _cogFlareSettings.Domain.HasValue());
-                    return url.HasValue() ? $"{_cogFlareSettings.Domain}{url}" : null;
-                })
-                .Where(x => x is not null)
-                .ToList();
-
-            _logService.Log(
-                $"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
+            var urlsToPurge = GetUrlsToPurge(relatedIds, isMedia);
+            
+            _logService.Log($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
 
             await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
         }
+    }
+
+    private IEnumerable<string> GetUrlsToPurge(IEnumerable<int> nodeIds, bool isMedia)
+    {
+        var urlsToPurge = new List<string>();
+
+        foreach (var relatedId in nodeIds)
+        {
+            urlsToPurge.Add(_umbracoContentNodeService.GetContentUrlById(relatedId, isMedia, _cogFlareSettings.Domain.HasValue()));
+            urlsToPurge.AddRange(GetAllUrls(relatedId));
+        }
+
+        return urlsToPurge
+            .Where(url => url.HasValue())
+            .Select(url => new Uri(new Uri(_cogFlareSettings.Domain), url).ToString())
+            .ToList();
+    }
+
+    private IEnumerable<string> GetAllUrls(int id)
+    {
+        var urlAliases = _umbracoContentNodeService
+                .GetContentById(id)
+                ?.Value<string>("umbracoUrlAlias");
+
+        if(!urlAliases.HasAny())
+        {
+            return [];
+        }
+
+        return urlAliases
+            ?.Replace(" ", string.Empty)
+            ?.Split(SeparatorConstants.Comma) ?? [];
     }
 
     private IEnumerable<int> GetRelatedNodeIds(int nodeId, bool isMedia)
