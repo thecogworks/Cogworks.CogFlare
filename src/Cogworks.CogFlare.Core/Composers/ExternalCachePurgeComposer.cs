@@ -24,6 +24,7 @@ public class ExternalCachePurgeComposer : IComposer
 
         builder
             .AddNotificationAsyncHandler<ContentPublishedNotification, ExternalCachePurgeComponent>()
+            .AddNotificationAsyncHandler<ContentPublishingNotification, ExternalCachePurgeComponent>()
             .AddNotificationAsyncHandler<ContentDeletedNotification, ExternalCachePurgeComponent>()
             .AddNotificationAsyncHandler<ContentUnpublishingNotification, ExternalCachePurgeComponent>()
             .AddNotificationAsyncHandler<MediaSavedNotification, ExternalCachePurgeComponent>();

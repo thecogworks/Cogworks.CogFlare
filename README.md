@@ -32,6 +32,18 @@ This is where CogFlare steps in. The package automatically monitors changes in y
 
 By automating the caching and purging process, CogFlare provides the performance benefits of full-page caching without the complexities of managing it manually.
 
+<h2 style="color:plum">How It Works Under the Hood</h2>
+
+CogFlare makes purge decisions using two mechanisms working together:
+
+1. **Umbraco's Relation Service**: when a content change is detected, CogFlare queries Umbraco's built-in relation service to discover which pages reference the changed node and, optionally, which pages that node itself references. This means purge decisions are based on real, tracked relationships in the CMS rather than guesswork or pattern matching.
+
+2. **Umbraco URL aliases**: CogFlare reads the built-in `umbracoUrlAlias` property on each node. If a page has alternate URL aliases defined, all of those URLs are included in the purge request automatically alongside the primary URL.
+
+3. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the bidirectional relations mode, all without changing code.
+
+The combination of these two mechanisms means CogFlare can make precise, site-specific decisions: using Umbraco's own data to identify which URLs are stale, and using your configuration to control how broadly that purge should spread.
+
 <h2 style="color:plum">Usage</h2>
 
 <h3 style="color:salmon">Basic Functionality</h2>
@@ -39,6 +51,7 @@ By automating the caching and purging process, CogFlare provides the performance
 - Automatically purges Cloudflare cache when:
   - Content nodes are **published, unpublished, or deleted**.
   - Media items are **saved**.
+- When purging a page, CogFlare automatically checks for any **Umbraco URL aliases** (`umbracoUrlAlias`) defined on the node and purges those URLs as well as the primary URL. No configuration is required; this is handled automatically.
 - Ability to toggle the package functionality on/off in the settings.
 - Ability to toggle logging on/off in the settings.
 
@@ -46,7 +59,7 @@ By automating the caching and purging process, CogFlare provides the performance
 
 - Configure **Key Nodes** in the settings:
   - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
-- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncachable**.
+- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncacheable**.
 
 <h3 style="color:salmon">Backoffice Dashboard</h2>
 
@@ -90,11 +103,12 @@ Add these settings to the **appsettings.json**
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
     "EnableLogging": true, //optional
-    "PurgeBatchSize": 45, // optional => split URL lists into batches (default: 45)
-    "KeyNodes": "1234, 031089", // optional
+    "UrlBatchSize": 45, // optional => split URL lists into batches (default: 45)
+    "KeyNodes": "1234,031089", // optional
     "KeyParentNodes": "1001",  // optional
-    "BlockAliases": "formBlock, otherFormBlock", // optional
-    "CacheTime": "2592000" // optional => will default to 1 month
+    "BlockAliases": "formBlock,otherFormBlock", // optional
+    "CacheTime": "2592000", // optional => defaults to 1 month
+    "EnableBidirectionalRelations": false // optional => when true purges relations in both directions
   }
 ```
 
@@ -108,7 +122,7 @@ Ensure you include the correct using directive at the top of your file:
 @using Cogworks.CogFlare.Core.Constants
 ```
 
-By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
+By default the cache time will be set to 1 month. This can be overridden in the CogFlare Settings
 
 <h2 style="color:plum">Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching</h2>
 
@@ -153,7 +167,7 @@ This package includes a feature to **conditionally disable caching** for pages c
 
 <h2 style="color:plum">App Settings Explained</h2>
 
-Brief explaination on some appsettings
+Brief explanation on some appsettings
 
 <h2 style="color:salmon">AuthenticationMethod</h2>
 
@@ -165,13 +179,18 @@ Authorization: Bearer [cloudflare_api_token]
 
 For backwards compatibility, when the value is set to "Email" (or anything other than "Bearer"), the following headers are sent:
 
-X-Auth-Email: [cloudeflare_email]
+X-Auth-Email: [cloudflare_email]
 <br/>
 X-Auth-Key: [cloudflare_api_key]
 
 <h2 style="color:salmon">ApiToken</h2>
 
-When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the CloudFalre dashboard.
+When using the "Bearer" AuthenticationMethod you will need to set an API Token. This is a different value than the API Key and will require you to generate one in the Cloudflare dashboard.
+
+
+<h2 style="color:salmon">EnableBidirectionalRelations</h2>
+
+When `EnableBidirectionalRelations` is `true`, CogFlare resolves content relations in both directions. When a page changes the package will purge the changed page, pages that reference it, and pages that it references. Leave this `false` (default) unless your site uses content pickers or templates where referenced content also displays aggregates (for example, author pages that list or summarise articles).
 
 
 <h3 style="color:salmon">CacheTime</h3>
@@ -189,7 +208,7 @@ Set how long (in seconds) Cloudflare should cache the response at the edge (i.e.
 
 The value you enter here will be used for the `Edge-Cache` header.  
 
-This only affects Cloudflare's edge caching — it doesn’t control browser caching.  
+This only affects Cloudflare's edge caching; it does not control browser caching.
 
 Useful for reducing load on your origin server while keeping things fast for end users.
 
@@ -199,7 +218,7 @@ A **Key Node** is any content node that triggers a **FULL site cache purge** whe
 
 <h3 style="color:salmon">KeyParentNodes</h3>
 
-The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages — such as a "News" or "Blog" section that pulls in the latest posts.
+The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages, such as a "News" or "Blog" section that pulls in the latest posts.
 
 When any child page under one of these specified key parent nodes is updated, added, or removed, the system will not only purge the changed page itself, but also any other pages that reference the key parent. This ensures that content listings or summaries (e.g., "Latest News") remain fresh and up to date.
 
@@ -212,17 +231,17 @@ This feature is especially useful for pages that dynamically reference child con
 - Category archives
 - Homepages with latest articles
 
-By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes — preventing stale content from sticking around.
+By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes, preventing stale content from sticking around.
 
 ### **Example**
-Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache — keeping your site content consistent.
+Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache, keeping your site content consistent.
 
 ## Batch Purging (new)
 
 To support Cloudflare plan limits (many plans limit purge requests to around 50 URLs per request), CogFlare now splits large purge lists into smaller batches and issues multiple purge requests as needed. This prevents Cloudflare rejecting large purge requests and helps ensure purges complete successfully.
 
-- **Default batch size:** 45 URLs per request (configurable).
-- **How to configure:** add the `PurgeBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
+• **Default batch size:** 45 URLs per request (configurable).
+• **How to configure:** add the `UrlBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
 
  
 
@@ -237,4 +256,4 @@ Password: 0123456789
 
 Licensed under the [MIT License](LICENSE.md)
 
-&copy; 2025 [Cogworks](https://www.wearecogworks.com/)
+&copy; 2026 [Cogworks](https://www.wearecogworks.com/)
