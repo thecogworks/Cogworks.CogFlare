@@ -36,9 +36,9 @@ By automating the caching and purging process, CogFlare provides the performance
 
 CogFlare makes purge decisions using two mechanisms working together:
 
-1. **Umbraco's Relation Service** — When a content change is detected, CogFlare queries Umbraco's built-in relation service to discover which pages reference the changed node and, optionally, which pages that node itself references. This means purge decisions are based on real, tracked relationships in the CMS rather than guesswork or pattern matching.
+1. **Umbraco's Relation Service**: when a content change is detected, CogFlare queries Umbraco's built-in relation service to discover which pages reference the changed node and, optionally, which pages that node itself references. This means purge decisions are based on real, tracked relationships in the CMS rather than guesswork or pattern matching.
 
-2. **Configurable appsettings** — Behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the new bidirectional relations mode — all without changing code.
+2. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the new bidirectional relations mode, all without changing code.
 
 The combination of these two mechanisms means CogFlare can make precise, site-specific decisions: using Umbraco's own data to identify which URLs are stale, and using your configuration to control how broadly that purge should spread.
 
@@ -56,7 +56,7 @@ The combination of these two mechanisms means CogFlare can make precise, site-sp
 
 - Configure **Key Nodes** in the settings:
   - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
-- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncachable**.
+- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncacheable**.
 
 <h3 style="color:salmon">Backoffice Dashboard</h2>
 
@@ -119,7 +119,7 @@ Ensure you include the correct using directive at the top of your file:
 @using Cogworks.CogFlare.Core.Constants
 ```
 
-By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
+By default the cache time will be set to 1 month. This can be overridden in the CogFlare Settings
 
 <h2 style="color:plum">Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching</h2>
 
@@ -164,7 +164,7 @@ This package includes a feature to **conditionally disable caching** for pages c
 
 <h2 style="color:plum">App Settings Explained</h2>
 
-Brief explaination on some appsettings
+Brief explanation on some appsettings
 
 <h2 style="color:salmon">AuthenticationMethod</h2>
 
@@ -176,7 +176,7 @@ Authorization: Bearer [cloudflare_api_token]
 
 For backwards compatibility, when the value is set to "Email" (or anything other than "Bearer"), the following headers are sent:
 
-X-Auth-Email: [cloudeflare_email]
+X-Auth-Email: [cloudflare_email]
 <br/>
 X-Auth-Key: [cloudflare_api_key]
 
@@ -205,7 +205,7 @@ Set how long (in seconds) Cloudflare should cache the response at the edge (i.e.
 
 The value you enter here will be used for the `Edge-Cache` header.  
 
-This only affects Cloudflare's edge caching — it doesn’t control browser caching.  
+This only affects Cloudflare's edge caching; it does not control browser caching.
 
 Useful for reducing load on your origin server while keeping things fast for end users.
 
@@ -215,7 +215,7 @@ A **Key Node** is any content node that triggers a **FULL site cache purge** whe
 
 <h3 style="color:salmon">KeyParentNodes</h3>
 
-The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages — such as a "News" or "Blog" section that pulls in the latest posts.
+The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages, such as a "News" or "Blog" section that pulls in the latest posts.
 
 When any child page under one of these specified key parent nodes is updated, added, or removed, the system will not only purge the changed page itself, but also any other pages that reference the key parent. This ensures that content listings or summaries (e.g., "Latest News") remain fresh and up to date.
 
@@ -228,10 +228,10 @@ This feature is especially useful for pages that dynamically reference child con
 - Category archives
 - Homepages with latest articles
 
-By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes — preventing stale content from sticking around.
+By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes, preventing stale content from sticking around.
 
 ### **Example**
-Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache — keeping your site content consistent.
+Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache, keeping your site content consistent.
 
 ## Batch Purging (new)
 

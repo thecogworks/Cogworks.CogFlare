@@ -148,7 +148,7 @@ This document describes every property on the `CogFlareSettings` configuration r
 - Description: Number of URLs to include in a single Cloudflare purge request. Many Cloudflare plans limit purge requests to ~50 URLs; CogFlare splits larger lists into batches.
 - When to use: Reduce batch size if you encounter API limits; increase carefully to reduce number of requests.
 - Example: `30`
-- Notes/Caveats: Historically referred to as `PurgeBatchSize` in older docs — the configuration key is `UrlBatchSize` in the current model.
+- Notes/Caveats: Historically referred to as `PurgeBatchSize` in older docs; the configuration key is `UrlBatchSize` in the current model.
 
 ---
 
