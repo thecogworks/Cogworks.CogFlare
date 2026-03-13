@@ -44,7 +44,8 @@ public class ExternalCachePurgeComponent :
 
     public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken)
     {
-
+        // The cache is purged based on URL. When an Umbraco node name is changed then the URL also changes.
+        // So to properly purge the changed content node we have to catch the node name changes during the 'Publishing' event
         var contentWithChangedNames = notification.PublishedEntities
             .Where(content => content.IsPropertyDirty("Name"))
             .Select(content => content.Id)
