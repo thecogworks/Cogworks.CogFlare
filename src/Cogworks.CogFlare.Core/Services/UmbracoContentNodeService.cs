@@ -3,6 +3,7 @@
 public interface IUmbracoContentNodeService
 {
     string? GetContentUrlById(int id, bool isMedia = false, bool isRelativeUrl = false);
+    IPublishedContent? GetContentById(int id);
     IEnumerable<int> GetAncestorsIdsById(int id);
 }
 
@@ -28,7 +29,7 @@ public class UmbracoContentNodeService : IUmbracoContentNodeService
             : GetContentById(id)?.Url(_publishedUrlProvider, mode: urlMode);
     }
 
-    private IPublishedContent? GetContentById(int id)
+    public IPublishedContent? GetContentById(int id)
     {
         using var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
 

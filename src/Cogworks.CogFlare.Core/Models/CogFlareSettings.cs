@@ -17,6 +17,7 @@ public record CogFlareSettings
     public bool IsValid => ApiKey.HasValue() && Email.HasValue() && Endpoint.HasValue();
     public string AuthenticationMethod { get; init; } = string.Empty;
     public int UrlBatchSize { get; init; } = 45;
+    public bool EnableBidirectionalRelations { get; init; }
 
     public IEnumerable<int> GetKeyNodes()
     {
