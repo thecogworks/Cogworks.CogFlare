@@ -51,6 +51,10 @@
     {
       "UmbracoMajorVersion": 13,
       "PackageId": "Cogworks.CogFlare"
+    },
+    {
+      "UmbracoMajorVersion": 17,
+      "PackageId": "Cogworks.CogFlare"
     }
   ]
 }
