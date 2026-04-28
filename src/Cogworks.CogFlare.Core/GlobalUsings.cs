@@ -29,5 +29,6 @@ global using Umbraco.Cms.Core.Notifications;
 global using Umbraco.Cms.Core.Routing;
 global using Umbraco.Cms.Core.Services;
 global using Umbraco.Cms.Core.Web;
-global using Umbraco.Cms.Web.BackOffice.Controllers;
+global using Umbraco.Cms.Api.Management.Controllers;
+global using Umbraco.Cms.Api.Management.Routing;
 global using Umbraco.Extensions;
