@@ -1,0 +1,27 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "Cogworks.CogFlare",
+  "id": "Cogworks.CogFlare",
+  "version": "1.9.0",
+  "allowPackageTelemetry": false,
+  "extensions": [
+    {
+      "type": "dashboard",
+      "alias": "Cogworks.CogFlare.Dashboard",
+      "name": "CogFlare",
+      "element": "/App_Plugins/Cogworks.CogFlare/cogflare-dashboard.element.js",
+      "elementName": "cogworks-cogflare-dashboard",
+      "weight": 100,
+      "meta": {
+        "label": "CogFlare",
+        "pathname": "cogflare"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Settings"
+        }
+      ]
+    }
+  ]
+}
