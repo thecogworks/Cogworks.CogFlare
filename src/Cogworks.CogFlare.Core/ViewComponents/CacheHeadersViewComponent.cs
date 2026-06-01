@@ -1,17 +1,15 @@
-﻿using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
+﻿using Umbraco.Cms.Core.Models.Blocks;
+using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
 
 namespace Cogworks.CogFlare.Core.ViewComponents;
 
-public class CacheHeadersViewComponent : ViewComponent
+public class CacheHeadersViewComponent(
+  IUmbracoContextAccessor umbracoContextAccessor,
+  IPublishedValueFallback publishedValueFallback,
+  CogFlareSettings cogFlareSettings)
+  : ViewComponent
 {
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-    private readonly CogFlareSettings _cogFlareSettings;
-
-    public CacheHeadersViewComponent(IUmbracoContextAccessor umbracoContextAccessor, CogFlareSettings cogFlareSettings)
-    {
-        _umbracoContextAccessor = umbracoContextAccessor;
-        _cogFlareSettings = cogFlareSettings ?? new CogFlareSettings();
-    }
+  private readonly CogFlareSettings _cogFlareSettings = cogFlareSettings ?? new CogFlareSettings();
 
     public IViewComponentResult Invoke()
     {
@@ -47,7 +45,7 @@ public class CacheHeadersViewComponent : ViewComponent
             return true;
         }
 
-        var currentPage = _umbracoContextAccessor?.GetRequiredUmbracoContext()?.PublishedRequest?.PublishedContent;
+        var currentPage = umbracoContextAccessor?.GetRequiredUmbracoContext()?.PublishedRequest?.PublishedContent;
 
         if (currentPage == null)
         {
@@ -57,8 +55,8 @@ public class CacheHeadersViewComponent : ViewComponent
         var blockList = currentPage.Properties
             .Where(property => property.PropertyType.DataType.EditorAlias == UmbracoConstants.BlockList &&
                                property.HasValue())
-            .SelectMany(content =>
-                content.Value(null!) as IEnumerable<BlockListItem> ?? Enumerable.Empty<BlockListItem>());
+            .SelectMany(property =>
+                currentPage.Value<BlockListModel>(publishedValueFallback, property.Alias) ?? Enumerable.Empty<BlockListItem>());
 
         return blockList.All(block => !blockAliases.Contains(block.Content.ContentType.Alias));
     }
