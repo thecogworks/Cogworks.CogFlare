@@ -7,7 +7,7 @@
 [![NuGet release](https://img.shields.io/nuget/v/Cogworks.CogFlare.svg)](https://www.nuget.org/packages/Cogworks.CogFlare/)
 ![NuGet Downloads](https://img.shields.io/nuget/dt/Cogworks.CogFlare)
 
-![Built With](https://img.shields.io/badge/Built%20With-.NET%207.0-blue)
+![Built With](https://img.shields.io/badge/Built%20With-.NET%2010.0-blue)
 ![Built With](https://img.shields.io/badge/Built%20With-Angular-DD0031?logo=angular&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cache%20Provider-Cloudflare-F38020?logo=cloudflare&logoColor=white)
 
@@ -18,7 +18,7 @@
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen?logo=github)
 
 
-A package that helps automatically purge CloudFlare cache with Umbraco 12-13
+A package that helps automatically purge Cloudflare cache with Umbraco 17+
 
 <h2 style="color:plum">Why is CogFlare Needed?</h2>
 
@@ -240,8 +240,8 @@ Let’s say you have a page with ID 1242 called "News", and it lists recent news
 
 To support Cloudflare plan limits (many plans limit purge requests to around 50 URLs per request), CogFlare now splits large purge lists into smaller batches and issues multiple purge requests as needed. This prevents Cloudflare rejecting large purge requests and helps ensure purges complete successfully.
 
-• **Default batch size:** 45 URLs per request (configurable).
-• **How to configure:** add the `UrlBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
+- **Default batch size:** 45 URLs per request (configurable).
+- **How to configure:** add the `UrlBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
 
  
 

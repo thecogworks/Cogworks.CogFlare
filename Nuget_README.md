@@ -1,10 +1,10 @@
 # CogFlare
 
-A package that helps automatically purge Cloudflare cache with Umbraco 12-13
+A package that helps automatically purge Cloudflare cache with Umbraco 17+
 
 [![NuGet release](https://img.shields.io/nuget/v/Cogworks.CogFlare.svg)](https://www.nuget.org/packages/Cogworks.CogFlare/)
 ![NuGet Downloads](https://img.shields.io/nuget/dt/Cogworks.CogFlare)
-![Built With](https://img.shields.io/badge/Built%20With-.NET%207.0-blue)
+![Built With](https://img.shields.io/badge/Built%20With-.NET%2010.0-blue)
 ![Built With](https://img.shields.io/badge/Built%20With-Angular-DD0031?logo=angular&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cache%20Provider-Cloudflare-F38020?logo=cloudflare&logoColor=white)
 ![Open Source](https://img.shields.io/badge/Open%20Source-❤-brightgreen)

@@ -1,8 +1,8 @@
 # CogFlare
 
-A package that helps automatically purge CloudFlare cache with Umbraco 12-13
+A package that helps automatically purge Cloudflare cache with Umbraco 17+
 
-![Built With](https://img.shields.io/badge/Built%20With-.NET%208.0-blue)
+![Built With](https://img.shields.io/badge/Built%20With-.NET%2010.0-blue)
 ![Built With](https://img.shields.io/badge/Built%20With-Angular-DD0031?logo=angular&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cache%20Provider-Cloudflare-F38020?logo=cloudflare&logoColor=white)
 ![Open Source](https://img.shields.io/badge/Open%20Source-❤-brightgreen)
@@ -37,7 +37,7 @@ By automating the caching and purging process, CogFlare provides the performance
 
 - Configure **Key Nodes** in the settings:
   - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
-- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncachable**.
+- Blocklist blocks that you don’t want to cache by specifying their aliases, with the **ability to automatically make form pages uncacheable**.
 
 ### Backoffice Dashboard
 
@@ -76,7 +76,7 @@ Add these settings to the **appsettings.json**
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
     "EnableLogging": true, //optional
-    "PurgeBatchSize": 45, // optional => split URL lists into batches (default: 45)
+    "UrlBatchSize": 45, // optional => split URL lists into batches (default: 45)
     "KeyNodes": "1234, 031089", // optional
     "KeyParentNodes": "1001",  // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
@@ -94,7 +94,7 @@ Ensure you include the correct using directive at the top of your file:
 @using Cogworks.CogFlare.Core.Constants
 ```
 
-By default the cache time will be set to 1 month. This can be overriden in the CogFlare Settings
+By default the cache time will be set to 1 month. This can be overridden in the CogFlare Settings
 
 ## Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching
 
@@ -139,7 +139,7 @@ This package includes a feature to **conditionally disable caching** for pages c
 
 ## App Settings Explained
 
-Brief explaination on some appsettings
+Brief explanation on some appsettings
 
 ### CacheTime
 
@@ -185,7 +185,7 @@ Let’s say you have a page with ID 1242 called "News", and it lists recent news
 
 ## Batch Purging (new)
 
-To avoid Cloudflare rejecting large purge requests (many Cloudflare plans limit purges to ~50 URLs per request), the package now splits large lists of URLs into batches and sends multiple purge requests. The default batch size is 45 URLs; change it with the `PurgeBatchSize` setting in `CogFlareSettings`.
+To avoid Cloudflare rejecting large purge requests (many Cloudflare plans limit purges to ~50 URLs per request), the package now splits large lists of URLs into batches and sends multiple purge requests. The default batch size is 45 URLs; change it with the `UrlBatchSize` setting in `CogFlareSettings`.
 
  
 
