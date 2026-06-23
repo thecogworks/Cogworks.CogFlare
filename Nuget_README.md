@@ -87,6 +87,7 @@ Add these settings to the **appsettings.json**:
   "IsEnabled": true,
   "ApiKey": "xxx",
   "ApiToken": "xxx",
+  "AuthenticationMethod": "Bearer",
   "Email": "xxx@xxx.com",
   "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
   "Domain": "https://www.example.com",

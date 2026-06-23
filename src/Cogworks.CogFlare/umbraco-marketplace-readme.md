@@ -72,6 +72,8 @@ Add these settings to the **appsettings.json**
   "CogFlareSettings": {
     "IsEnabled": true,
     "ApiKey": "xxx",
+    "ApiToken": "xxx",
+    "AuthenticationMethod": "Bearer", // optional => "Bearer" or "Email" (default for backwards compatibility)
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
@@ -80,7 +82,8 @@ Add these settings to the **appsettings.json**
     "KeyNodes": "1234, 031089", // optional
     "KeyParentNodes": "1001",  // optional
     "BlockAliases": "formBlock, otherFormBlock", // optional
-    "CacheTime": "2592000" // optional => will default to 1 month
+    "CacheTime": "2592000", // optional => will default to 1 month
+    "EnableBidirectionalRelations": false // optional => when true purges relations in both directions
   }
 ```
 

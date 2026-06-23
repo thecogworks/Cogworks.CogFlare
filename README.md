@@ -99,6 +99,7 @@ Add these settings to the **appsettings.json**
     "IsEnabled": true,
     "ApiKey": "xxx",
     "ApiToken": "xxx",
+    "AuthenticationMethod": "Bearer", // optional => "Bearer" or "Email" (default for backwards compatibility)
     "Email": "xxx@xxx.com",
     "Endpoint": "https://api.cloudflare.com/client/v4/zones/[zoneId]/purge_cache",
     "Domain": "https://www.example.com",
