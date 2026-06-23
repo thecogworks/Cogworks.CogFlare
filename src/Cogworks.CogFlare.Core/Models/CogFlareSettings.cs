@@ -14,7 +14,7 @@ public record CogFlareSettings
     public string BlockAliases { get; init; } = string.Empty;
     public string CacheTime { get; init; } = string.Empty;
     public string CacheTimeEdge { get; init; } = string.Empty;
-    public bool IsValid => (ApiToken.HasValue() || (ApiKey.HasValue() && Email.HasValue())) && Endpoint.HasValue();
+    public bool IsValid => ((ApiToken.HasValue() && AuthenticationMethod.HasValue() && AuthenticationMethod.InvariantEquals(ApplicationConstants.BearerLabel)) || (ApiKey.HasValue() && Email.HasValue())) && Endpoint.HasValue();
     public string AuthenticationMethod { get; init; } = string.Empty;
     public int UrlBatchSize { get; init; } = 45;
     public bool EnableBidirectionalRelations { get; init; }
