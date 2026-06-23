@@ -84,6 +84,13 @@ Add these settings to the **appsettings.json**
     "BlockAliases": "formBlock, otherFormBlock", // optional
     "CacheTime": "2592000", // optional => will default to 1 month
     "EnableBidirectionalRelations": false // optional => when true purges relations in both directions
+  },
+  "CustomServicePurgeSettings": {
+    "IsEnabled": true, // optional => enable custom endpoint purging (default: false)
+    "Endpoint": "http://localhost:3000/api/revalidate", // The endpoint to call on content changes
+    "HeaderName": "x-webhook-secret", // optional => header name for authentication
+    "HeaderValue": "xxx", // optional => header value for authentication
+    "ContinueProcessIfCustomPurgeFails": true // optional => continue if custom purge fails (default: true)
   }
 ```
 
@@ -98,6 +105,61 @@ Ensure you include the correct using directive at the top of your file:
 ```
 
 By default the cache time will be set to 1 month. This can be overridden in the CogFlare Settings
+
+## Custom Service Purge Endpoints
+
+In addition to Cloudflare cache purging, CogFlare allows you to trigger purge or revalidation on **additional external services** when content changes. This is particularly useful if you have:
+
+- A **Next.js application** with Incremental Static Regeneration (ISR) that needs revalidation
+- **Custom caching layers** that require purging when Umbraco content changes
+- **Multiple separate services** that need to stay in sync with your CMS
+
+### How It Works
+
+When a content change is detected, CogFlare will:
+1. **First**, send a request to your custom endpoint with:
+   - The affected URLs that will be purged
+   - Optional authentication headers for security
+   - The purge context (which pages changed, which were affected, etc.)
+2. **Then**, purge the Cloudflare cache as normal
+
+This ordering ensures that your external services (like Next.js ISR) have time to revalidate and prepare fresh content before the CDN cache is cleared, reducing the risk of serving stale content during the transition.
+
+### Configuration
+
+Enable custom service purging by adding the `CustomServicePurgeSettings` to your **appsettings.json**:
+
+```js
+"CustomServicePurgeSettings": {
+  "IsEnabled": true,
+  "Endpoint": "http://localhost:3000/api/revalidate",
+  "HeaderName": "x-webhook-secret",
+  "HeaderValue": "xxx",
+  "ContinueProcessIfCustomPurgeFails": true
+}
+```
+
+- **IsEnabled**: Toggle custom endpoint purging on/off (default: `false`)
+- **Endpoint**: The URL where CogFlare will send purge requests
+- **HeaderName** (optional): Custom header name for authentication (e.g., `x-webhook-secret`)
+- **HeaderValue** (optional): Custom header value for authentication
+- **ContinueProcessIfCustomPurgeFails** (optional): If `true`, the Umbraco/Cloudflare purge will complete even if the custom endpoint fails. If `false`, the entire purge operation will fail if the custom endpoint is unreachable (default: `true`)
+
+### Example: Next.js ISR Revalidation
+
+A common use case is revalidating Next.js pages with ISR. Configure CogFlare to hit your Next.js revalidation endpoint:
+
+```js
+"CustomServicePurgeSettings": {
+  "IsEnabled": true,
+  "Endpoint": "https://your-nextjs-app.com/api/revalidate",
+  "HeaderName": "x-revalidate-token",
+  "HeaderValue": "your-secret-token",
+  "ContinueProcessIfCustomPurgeFails": false
+}
+```
+
+When you publish a page in Umbraco, CogFlare will automatically call this endpoint, triggering ISR revalidation on your Next.js app for the affected pages.
 
 ## Umbraco Forms and Anti-Forgery Tokens with Full Page HTML Caching
 
