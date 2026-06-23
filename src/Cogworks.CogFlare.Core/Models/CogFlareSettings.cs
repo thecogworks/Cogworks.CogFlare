@@ -18,6 +18,7 @@ public record CogFlareSettings
     public string AuthenticationMethod { get; init; } = string.Empty;
     public int UrlBatchSize { get; init; } = 45;
     public bool EnableBidirectionalRelations { get; init; }
+    public CustomServicePurgeSettings CustomServicePurgeSettings { get; init; } = new CustomServicePurgeSettings();
 
     public IEnumerable<int> GetKeyNodes()
     {
@@ -33,4 +34,14 @@ public record CogFlareSettings
 
         return keyNodes;
     }
+}
+
+public record CustomServicePurgeSettings
+{
+    public bool IsEnabled { get; init; }
+    public string Endpoint { get; init; } = string.Empty;
+    public string HeaderName { get; init; } = string.Empty;
+    public string HeaderValue { get; init; } = string.Empty;
+    public bool ContinueProcessIfCustomPurgeFails { get; init; }
+    public bool IsValid => IsEnabled &&Endpoint.HasValue();
 }

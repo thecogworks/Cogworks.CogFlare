@@ -18,6 +18,8 @@ public class ExternalCachePurgeComposer : IComposer
             .AddTransient(_ => cogFlareSettings)
             .AddHttpClient()
             .AddTransient<ICachePurgeService, CachePurgeService>()
+            .AddTransient<CustomEndpointCachePurgeService>()
+            .AddTransient<ICloudFlareCachePurgeService, CustomEndpointCachePurgeService>()
             .AddTransient<ICloudFlareCachePurgeService, CloudFlareCachePurgeService>()
             .AddTransient<IUmbracoContentNodeService, UmbracoContentNodeService>()
             .AddTransient<ICogFlareLogService, CogFlareLogService>();

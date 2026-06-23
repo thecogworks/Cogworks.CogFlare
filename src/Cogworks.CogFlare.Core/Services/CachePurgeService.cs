@@ -17,19 +17,22 @@ public class CachePurgeService : ICachePurgeService
     private readonly IRelationService _relationService;
     private readonly ICogFlareLogService _logService;
     private readonly CogFlareSettings _cogFlareSettings;
+    private readonly CustomEndpointCachePurgeService _customEndpointCachePurgeService;
 
     public CachePurgeService(
         ICloudFlareCachePurgeService cloudFlareCachePurgeService,
         IUmbracoContentNodeService umbracoContentNodeService,
         IRelationService relationService,
         ICogFlareLogService logService,
-        CogFlareSettings cogFlareSettings)
+        CogFlareSettings cogFlareSettings,
+        CustomEndpointCachePurgeService customEndpointCachePurgeService)
     {
         _cloudFlareCachePurgeService = cloudFlareCachePurgeService;
         _umbracoContentNodeService = umbracoContentNodeService;
         _relationService = relationService;
         _logService = logService;
         _cogFlareSettings = cogFlareSettings;
+        _customEndpointCachePurgeService = customEndpointCachePurgeService;
     }
 
     public async Task PurgeExternalCacheAsync(
@@ -45,7 +48,7 @@ public class CachePurgeService : ICachePurgeService
             {
                 _logService.Log($"Full purge triggered: [{id}] Key node {notificationLabel}");
 
-                await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
+                await ProcessPurge(cancellationToken, true);
 
                 return;
             }
@@ -58,7 +61,7 @@ public class CachePurgeService : ICachePurgeService
             {
                 _logService.Log($"Full purge triggered: [{id}] Node related to key node {notificationLabel}");
 
-                await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, true);
+                await ProcessPurge(cancellationToken, true);
 
                 return;
             }
@@ -67,7 +70,7 @@ public class CachePurgeService : ICachePurgeService
             
             _logService.Log($"Individual node(s) purge triggered: [{string.Join(",", urlsToPurge)}] {notificationLabel}");
 
-            await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, false, urlsToPurge);
+            await ProcessPurge(cancellationToken, false, urlsToPurge);
         }
     }
 
@@ -156,5 +159,21 @@ public class CachePurgeService : ICachePurgeService
         return _cogFlareSettings
             .KeyNodes.GetNodeIds()
             .Contains(nodeId);
+    }
+
+    private async Task<bool> ProcessPurge(CancellationToken cancellationToken, bool purgeEverything = false, IEnumerable<string> urlsToPurge = null)
+    {
+        var customPurge = _cogFlareSettings.CustomServicePurgeSettings.IsValid
+            ? await _customEndpointCachePurgeService.PurgeCacheAsync(cancellationToken, purgeEverything, urlsToPurge)
+            : true;
+
+        if (!_cogFlareSettings.CustomServicePurgeSettings.ContinueProcessIfCustomPurgeFails && !customPurge)
+        {
+            _logService.Log($"Process halted: Custom purge failed and [ContinueProcessIfCustomPurgeFails] is false.");
+            return false;
+        }
+
+        var cloudFlarePurge = await _cloudFlareCachePurgeService.PurgeCacheAsync(cancellationToken, purgeEverything, urlsToPurge);
+        return cloudFlarePurge;
     }
 }
