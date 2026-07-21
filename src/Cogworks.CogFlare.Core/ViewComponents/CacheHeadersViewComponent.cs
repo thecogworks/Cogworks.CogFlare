@@ -1,5 +1,4 @@
-﻿using Umbraco.Cms.Core.Models.Blocks;
-using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
+﻿using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
 
 namespace Cogworks.CogFlare.Core.ViewComponents;
 
@@ -36,7 +35,7 @@ public class CacheHeadersViewComponent(
                 // added unique identifier to the response headers to indicate that the page is cacheable and has a non-zero cache time
                 if (!isCacheTimeZero)
                 {
-                    HttpContext.Response.Headers["X-CWCF"] = "1";
+                    HttpContext.Response.Headers[ApplicationConstants.CustomHeaderLabel] = "1";
                 }
             }
         }
