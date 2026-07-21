@@ -27,9 +27,17 @@ public class CacheHeadersViewComponent(
 
             if (_cogFlareSettings.CacheTime.HasValue())
             {
-                HttpContext.Response.Headers["Cache-Control"] = _cogFlareSettings.CacheTime.Equals("0")
+                var isCacheTimeZero = _cogFlareSettings.CacheTime.Equals("0");
+
+                HttpContext.Response.Headers["Cache-Control"] = isCacheTimeZero
                     ? "no-cache, no-store, must-revalidate"
                     : $"public, max-age={_cogFlareSettings.CacheTime}";
+
+                // added unique identifier to the response headers to indicate that the page is cacheable and has a non-zero cache time
+                if (!isCacheTimeZero)
+                {
+                    HttpContext.Response.Headers["X-CWCF"] = "1";
+                }
             }
         }
 
