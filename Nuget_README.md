@@ -288,6 +288,13 @@ To support Cloudflare plan limits (many plans limit purge requests to around 50 
 - **Default batch size:** 45 URLs per request (configurable).
 - **How to configure:** add the `UrlBatchSize` integer value to your `CogFlareSettings` in `appsettings.json`.
 
+## Backoffice User:
+
+```sh
+Email: admin@admin.com
+Password: 0123456789
+```
+
 ## License
 
 Licensed under the [MIT License](LICENSE.md)
