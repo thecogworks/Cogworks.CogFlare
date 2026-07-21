@@ -52,7 +52,7 @@ The combination of these mechanisms means CogFlare can make precise, site-specif
 
 - Configure **Key Nodes** in the settings:
   - A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
-- Blocklist blocks that you don't want to cache by specifying their aliases, with the **ability to automatically make form pages uncacheable**.
+- Blocklist blocks (from **BlockList** and **BlockGrid** components) that you don't want to cache by specifying their aliases, with the **ability to automatically make form pages uncacheable**.
 
 ### Backoffice Dashboard
 
@@ -199,13 +199,13 @@ You can **disable anti-forgery tokens** for the affected pages:
 1. This allows the page to remain cached while keeping the form functional.
 2. **Caution**: Disabling anti-forgery tokens may reduce the security of form submissions.
 
-#### Option 2: Use Blocklist Aliases to Disable Caching for Specific Pages
+#### Option 2: Use Block Aliases to Disable Caching for Specific Pages
 
 This package includes a feature to **conditionally disable caching** for pages containing specific blocks, such as forms, to avoid the anti-forgery token issue.
 
 1. **How It Works**:
-   - In the `CogFlareSettings` in the appsettings, you can provide a **blocklist alias** (e.g., a block alias for the Umbraco form or any other block you don't want to cache).
-   - When rendering the page, the package checks for the presence of any of the specified block aliases.
+   - In the `CogFlareSettings` in the appsettings, you can provide **block aliases** (e.g., block aliases for Umbraco forms or any other blocks you don't want to cache).
+   - When rendering the page, the package checks both **BlockList** and **BlockGrid** components for the presence of any of the specified block aliases.
    - If the page includes a block with one of these aliases, `private, no-cache, must-revalidate` will be set for the page, effectively disabling caching for that page.
 
 2. **Configuration**: add your `BlockAliases` to `CogFlareSettings`:

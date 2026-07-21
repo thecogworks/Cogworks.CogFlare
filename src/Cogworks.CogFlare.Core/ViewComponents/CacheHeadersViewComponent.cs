@@ -1,4 +1,4 @@
-﻿using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
+using UmbracoConstants = Umbraco.Cms.Core.Constants.PropertyEditors.Aliases;
 
 namespace Cogworks.CogFlare.Core.ViewComponents;
 
@@ -60,11 +60,13 @@ public class CacheHeadersViewComponent(
         }
 
         var blockList = currentPage.Properties
-            .Where(property => property.PropertyType.DataType.EditorAlias == UmbracoConstants.BlockList &&
-                               property.HasValue())
-            .SelectMany(property =>
-                currentPage.Value<BlockListModel>(publishedValueFallback, property.Alias) ?? Enumerable.Empty<BlockListItem>());
+            .Where(property => property.PropertyType.DataType.EditorAlias == UmbracoConstants.BlockList && property.HasValue())
+            .SelectMany(property => currentPage.Value<BlockListModel>(publishedValueFallback, property.Alias) ?? Enumerable.Empty<BlockListItem>());
 
-        return blockList.All(block => !blockAliases.Contains(block.Content.ContentType.Alias));
+        var blockGrid = currentPage.Properties
+            .Where(property => property.PropertyType.DataType.EditorAlias == UmbracoConstants.BlockGrid && property.HasValue())
+            .SelectMany(property => currentPage.Value<BlockGridModel>(publishedValueFallback, property.Alias) ?? Enumerable.Empty<BlockGridItem>());
+
+        return blockList.All(block => !blockAliases.Contains(block.Content.ContentType.Alias)) && blockGrid.All(block => !blockAliases.Contains(block.Content.ContentType.Alias));
     }
 }

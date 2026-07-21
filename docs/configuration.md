@@ -84,10 +84,10 @@ This document describes every property on the `CogFlareSettings` configuration r
 - Type: string (comma-separated aliases)
 - Required: Optional
 - Default: `""`
-- Description: Aliases of CMS blocks that should disable caching for the page when present (e.g., forms).
+- Description: Aliases of CMS blocks (from BlockList and BlockGrid components) that should disable caching for the page when present (e.g., forms).
 - When to use: Use to prevent caching pages containing forms or other dynamic blocks that must not be cached.
 - Example: `"formBlock,contactFormBlock"`
-- Notes/Caveats: Matching is by alias; ensure block aliases match exactly.
+- Notes/Caveats: Matching is by alias and applies to both BlockList and BlockGrid components; ensure block aliases match exactly.
 
 ## `CacheTime`
 - Type: string (seconds)
