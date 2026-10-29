@@ -5,6 +5,7 @@ public interface IUmbracoContentNodeService
     string? GetContentUrlById(int id, bool isMedia = false, bool isRelativeUrl = false);
     IPublishedContent? GetContentById(int id);
     IEnumerable<int> GetAncestorsIdsById(int id);
+    IEnumerable<int> GetContentIdsByGuids(IEnumerable<Guid> guids);
 }
 
 public class UmbracoContentNodeService : IUmbracoContentNodeService
@@ -56,5 +57,18 @@ public class UmbracoContentNodeService : IUmbracoContentNodeService
         return node?.Ancestors()
             .Select(x => x.Id)
             .ToList() ?? Enumerable.Empty<int>();
+    }
+
+    public IEnumerable<int> GetContentIdsByGuids(IEnumerable<Guid> guids)
+    {
+        using var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
+
+        var contentCache = umbracoContextReference.UmbracoContext.Content;
+
+        return guids
+            .Select(guid => contentCache!.GetById(guid)?.Id)
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .ToList();
     }
 }
