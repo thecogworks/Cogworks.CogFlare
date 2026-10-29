@@ -26,6 +26,8 @@ public class CloudFlareCachePurgeApiController(
     {
         var keyNodes = cogFlareSettings
             .KeyNodes.GetNodeIds()
+            .Concat(umbracoContentNodeService.GetContentIdsByGuids(cogFlareSettings.KeyGuids.GetNodeGuids()))
+            .Distinct()
             .Select(id => umbracoContentNodeService.GetContentUrlById(id));
 
         var settings = cogFlareSettings with

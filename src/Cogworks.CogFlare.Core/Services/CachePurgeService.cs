@@ -139,7 +139,11 @@ public class CachePurgeService : ICachePurgeService
         var keyParentNodes = new List<int>();
         var ancestorsIds = _umbracoContentNodeService.GetAncestorsIdsById(id);
 
-        foreach (var keyParentNode in _cogFlareSettings.KeyParentNodes?.GetNodeIds())
+        var keyParentNodeIds = _cogFlareSettings.KeyParentNodes.GetNodeIds()
+            .Concat(_umbracoContentNodeService.GetContentIdsByGuids(_cogFlareSettings.KeyParentGuids.GetNodeGuids()))
+            .Distinct();
+
+        foreach (var keyParentNode in keyParentNodeIds)
         {
             var relatedParentIds = ancestorsIds
                 ?.Where(x => x == keyParentNode)
@@ -156,9 +160,10 @@ public class CachePurgeService : ICachePurgeService
 
     private bool IsKeyNode(int nodeId)
     {
-        return _cogFlareSettings
-            .KeyNodes.GetNodeIds()
-            .Contains(nodeId);
+        return _cogFlareSettings.KeyNodes.GetNodeIds().Contains(nodeId)
+            || _umbracoContentNodeService
+                .GetContentIdsByGuids(_cogFlareSettings.KeyGuids.GetNodeGuids())
+                .Contains(nodeId);
     }
 
     private async Task<bool> ProcessPurge(CancellationToken cancellationToken, bool purgeEverything = false, IEnumerable<string> urlsToPurge = null)

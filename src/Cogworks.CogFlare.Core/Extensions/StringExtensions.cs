@@ -19,4 +19,19 @@ public static class StringExtensions
 
         return keyNodes;
     }
+
+    public static IEnumerable<Guid> GetNodeGuids(this string nodes)
+    {
+        var keyGuids = new List<Guid>();
+
+        foreach (var keyGuid in nodes?.Split(SeparatorConstants.Comma) ?? [])
+        {
+            if (Guid.TryParse(keyGuid.Trim(), out var guid))
+            {
+                keyGuids.Add(guid);
+            }
+        }
+
+        return keyGuids;
+    }
 }

@@ -2,46 +2,48 @@
 
 public record CogFlareSettings
 {
-    public string ApiKey { get; init; } = string.Empty;
-    public string ApiToken { get; init; } = string.Empty;
-    public string Email { get; init; } = string.Empty;
-    public string Endpoint { get; init; } = string.Empty;
-    public string KeyNodes { get; init; } = string.Empty;
-    public string KeyParentNodes { get; init; } = string.Empty;
-    public string Domain { get; init; } = string.Empty;
-    public bool IsEnabled { get; init; }
-    public bool EnableLogging { get; init; } = true;
-    public string BlockAliases { get; init; } = string.Empty;
-    public string CacheTime { get; init; } = string.Empty;
-    public string CacheTimeEdge { get; init; } = string.Empty;
-    public bool IsValid => ((ApiToken.HasValue() && AuthenticationMethod.HasValue() && AuthenticationMethod.InvariantEquals(ApplicationConstants.BearerLabel)) || (ApiKey.HasValue() && Email.HasValue())) && Endpoint.HasValue();
-    public string AuthenticationMethod { get; init; } = string.Empty;
-    public int UrlBatchSize { get; init; } = 45;
-    public bool EnableBidirectionalRelations { get; init; }
-    public CustomServicePurgeSettings CustomServicePurgeSettings { get; init; } = new CustomServicePurgeSettings();
+	public string ApiKey { get; init; } = string.Empty;
+	public string ApiToken { get; init; } = string.Empty;
+	public string Email { get; init; } = string.Empty;
+	public string Endpoint { get; init; } = string.Empty;
+	public string KeyNodes { get; init; } = string.Empty;
+	public string KeyParentNodes { get; init; } = string.Empty;
+	public string KeyGuids { get; init; } = string.Empty;
+	public string KeyParentGuids { get; init; } = string.Empty;
+	public string Domain { get; init; } = string.Empty;
+	public bool IsEnabled { get; init; }
+	public bool EnableLogging { get; init; } = true;
+	public string BlockAliases { get; init; } = string.Empty;
+	public string CacheTime { get; init; } = string.Empty;
+	public string CacheTimeEdge { get; init; } = string.Empty;
+	public bool IsValid => ((ApiToken.HasValue() && AuthenticationMethod.HasValue() && AuthenticationMethod.InvariantEquals(ApplicationConstants.BearerLabel)) || (ApiKey.HasValue() && Email.HasValue())) && Endpoint.HasValue();
+	public string AuthenticationMethod { get; init; } = string.Empty;
+	public int UrlBatchSize { get; init; } = 45;
+	public bool EnableBidirectionalRelations { get; init; }
+	public CustomServicePurgeSettings CustomServicePurgeSettings { get; init; } = new CustomServicePurgeSettings();
 
-    public IEnumerable<int> GetKeyNodes()
-    {
-        var keyNodes = new List<int>();
+	public IEnumerable<int> GetKeyNodes()
+	{
+		var keyNodes = new List<int>();
 
-        foreach (var keyNode in KeyNodes?.Split(SeparatorConstants.Comma))
-        {
-            if (int.TryParse(keyNode, out var id))
-            {
-                keyNodes.Add(id);
-            }
-        }
+		foreach (var keyNode in KeyNodes?.Split(SeparatorConstants.Comma))
+		{
+			if (int.TryParse(keyNode, out var id))
+			{
+				keyNodes.Add(id);
+			}
+		}
 
-        return keyNodes;
-    }
+		return keyNodes;
+	}
 }
 
 public record CustomServicePurgeSettings
 {
-    public bool IsEnabled { get; init; }
-    public string Endpoint { get; init; } = string.Empty;
-    public string HeaderName { get; init; } = string.Empty;
-    public string HeaderValue { get; init; } = string.Empty;
-    public bool ContinueProcessIfCustomPurgeFails { get; init; }
-    public bool IsValid => IsEnabled &&Endpoint.HasValue();
+	public bool IsEnabled { get; init; }
+	public string Endpoint { get; init; } = string.Empty;
+	public string HeaderName { get; init; } = string.Empty;
+	public string HeaderValue { get; init; } = string.Empty;
+	public bool ContinueProcessIfCustomPurgeFails { get; init; }
+	public bool IsValid => IsEnabled && Endpoint.HasValue();
 }
