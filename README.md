@@ -40,7 +40,7 @@ CogFlare makes purge decisions using two mechanisms working together:
 
 2. **Umbraco URL aliases**: CogFlare reads the built-in `umbracoUrlAlias` property on each node. If a page has alternate URL aliases defined, all of those URLs are included in the purge request automatically alongside the primary URL.
 
-3. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes that trigger full-site purges, parent node hierarchies, content type blocklists, batch sizes and the bidirectional relations mode, all without changing code.
+3. **Configurable appsettings**: behaviour is controlled at runtime through `CogFlareSettings` in `appsettings.json`. Settings let you define key nodes and parent node hierarchies by ID or GUID, content type blocklists, batch sizes and the bidirectional relations mode, all without changing code.
 
 The combination of these two mechanisms means CogFlare can make precise, site-specific decisions: using Umbraco's own data to identify which URLs are stale, and using your configuration to control how broadly that purge should spread.
 
@@ -107,6 +107,8 @@ Add these settings to the **appsettings.json**
     "UrlBatchSize": 45, // optional => split URL lists into batches (default: 45)
     "KeyNodes": "1234,031089", // optional
     "KeyParentNodes": "1001",  // optional
+    "KeyGuids": "11111111-1111-1111-1111-111111111111", // optional => key nodes by content GUID
+    "KeyParentGuids": "22222222-2222-2222-2222-222222222222", // optional => key parent nodes by content GUID
     "BlockAliases": "formBlock,otherFormBlock", // optional
     "CacheTime": "2592000", // optional => defaults to 1 month
     "EnableBidirectionalRelations": false // optional => when true purges relations in both directions
@@ -279,9 +281,11 @@ Useful for reducing load on your origin server while keeping things fast for end
 
 A **Key Node** is any content node that triggers a **FULL site cache purge** when it or its referenced nodes are changed (e.g., Site Settings, Navigation, Footers).
 
+Use `KeyNodes` to specify comma-separated integer node IDs, or `KeyGuids` to specify comma-separated Umbraco content GUIDs. Either setting can be used, and both can be combined. Replace the example GUID in the configuration with the GUID of your content node.
+
 <h3 style="color:salmon">KeyParentNodes</h3>
 
-The Key Parent Nodes setting allows you to specify important parent page IDs within your site structure. These are typically pages that aggregate or display content from their child pages, such as a "News" or "Blog" section that pulls in the latest posts.
+The Key Parent Nodes setting allows you to specify important parent pages within your site structure by integer node ID (`KeyParentNodes`) or Umbraco content GUID (`KeyParentGuids`). These are typically pages that aggregate or display content from their child pages, such as a "News" or "Blog" section that pulls in the latest posts. The ID and GUID settings can be used together.
 
 When any child page under one of these specified key parent nodes is updated, added, or removed, the system will not only purge the changed page itself, but also any other pages that reference the key parent. This ensures that content listings or summaries (e.g., "Latest News") remain fresh and up to date.
 
@@ -297,7 +301,7 @@ This feature is especially useful for pages that dynamically reference child con
 By using key parent nodes, you ensure that all related cached content is correctly invalidated whenever underlying data changes, preventing stale content from sticking around.
 
 ### **Example**
-Let’s say you have a page with ID 1242 called "News", and it lists recent news articles. If you set 1242 as a key parent node, and a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache, keeping your site content consistent.
+Let’s say you have a page called "News" that lists recent news articles. Add its integer ID to `KeyParentNodes` or its Umbraco content GUID to `KeyParentGuids`. When a new article is published under it, any page that references the "News" page (like the homepage) will also be purged from cache, keeping your site content consistent.
 
 ## Batch Purging (new)
 

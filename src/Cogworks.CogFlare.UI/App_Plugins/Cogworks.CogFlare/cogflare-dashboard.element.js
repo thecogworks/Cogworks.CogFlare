@@ -40,6 +40,9 @@ class CogflareDashboard extends UmbLitElement {
                 font-weight: bold;
                 min-width: 180px;
             }
+            .settings-value {
+                white-space: pre-line;
+            }
         `,
     ];
 
@@ -119,6 +122,28 @@ class CogflareDashboard extends UmbLitElement {
         }
     }
 
+    _formatSetting(value) {
+        return value == null || String(value).trim() === '' ? '~not configured~' : value;
+    }
+
+    _formatList(value) {
+        if (typeof value !== 'string' || value.trim() === '') {
+            return '~not configured~';
+        }
+
+        return value.split(',').map((item) => item.trim()).filter(Boolean).join('\n') || '~not configured~';
+    }
+
+    _hasCustomServicePurgeSettings(settings) {
+        return Boolean(
+            settings &&
+            (settings.isEnabled ||
+                settings.endpoint?.trim() ||
+                settings.headerName?.trim() ||
+                settings.headerValue?.trim()),
+        );
+    }
+
     render() {
         return html`
             <uui-box headline="CogFlare">
@@ -170,29 +195,93 @@ class CogflareDashboard extends UmbLitElement {
                         <div class="settings-grid">
                             <div class="settings-row">
                                 <span class="settings-label">CogFlare Enabled:</span>
-                                <span>${this._settings.isEnabled}</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.isEnabled)}</span>
                             </div>
                             <div class="settings-row">
                                 <span class="settings-label">Key Nodes:</span>
-                                <span>${this._settings.keyNodes}</span>
+                                <span class="settings-value">${this._formatList(this._settings.keyNodes)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Key Parent Nodes:</span>
+                                <span class="settings-value">${this._formatList(this._settings.keyParentNodes)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Key GUIDs:</span>
+                                <span class="settings-value">${this._formatList(this._settings.keyGuids)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Key Parent GUIDs:</span>
+                                <span class="settings-value">${this._formatList(this._settings.keyParentGuids)}</span>
                             </div>
                             <div class="settings-row">
                                 <span class="settings-label">Endpoint:</span>
-                                <span>${this._settings.endpoint}</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.endpoint)}</span>
                             </div>
                             <div class="settings-row">
                                 <span class="settings-label">Email:</span>
-                                <span>${this._settings.email}</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.email)}</span>
                             </div>
                             <div class="settings-row">
                                 <span class="settings-label">API Key:</span>
-                                <span>${this._settings.apiKey}</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.apiKey)}</span>
                             </div>
                             <div class="settings-row">
                                 <span class="settings-label">Authentication Method:</span>
-                                <span>${this._settings.authenticationMethod}</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.authenticationMethod)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Enable Bidirectional Relations:</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.enableBidirectionalRelations)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Url Batch Size:</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.urlBatchSize)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Block Aliases:</span>
+                                <span class="settings-value">${this._formatList(this._settings.blockAliases)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Cache Time:</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.cacheTime)}</span>
+                            </div>
+                            <div class="settings-row">
+                                <span class="settings-label">Cache Time Edge:</span>
+                                <span class="settings-value">${this._formatSetting(this._settings.cacheTimeEdge)}</span>
                             </div>
                         </div>
+                        ${this._hasCustomServicePurgeSettings(this._settings.customServicePurgeSettings)
+                            ? html`
+                                <h4>Custom Service Purge Settings</h4>
+                                <div class="settings-grid">
+                                    <div class="settings-row">
+                                        <span class="settings-label">Is Enabled:</span>
+                                        <span class="settings-value">${this._formatSetting(this._settings.customServicePurgeSettings.isEnabled)}</span>
+                                    </div>
+                                    <div class="settings-row">
+                                        <span class="settings-label">Endpoint:</span>
+                                        <span class="settings-value">${this._formatSetting(this._settings.customServicePurgeSettings.endpoint)}</span>
+                                    </div>
+                                    <div class="settings-row">
+                                        <span class="settings-label">Header Name:</span>
+                                        <span class="settings-value">${this._formatSetting(this._settings.customServicePurgeSettings.headerName)}</span>
+                                    </div>
+                                    <div class="settings-row">
+                                        <span class="settings-label">Header Value:</span>
+                                        <span class="settings-value">${this._formatSetting(this._settings.customServicePurgeSettings.headerValue)}</span>
+                                    </div>
+                                    <div class="settings-row">
+                                        <span class="settings-label">Continue If Purge Fails:</span>
+                                        <span class="settings-value">${this._formatSetting(this._settings.customServicePurgeSettings.continueProcessIfCustomPurgeFails)}</span>
+                                    </div>
+                                </div>
+                            `
+                            : html`
+                                <div class="settings-row">
+                                    <span class="settings-label">CustomServicePurgeSettings:</span>
+                                    <span class="settings-value">~not configured~</span>
+                                </div>
+                            `}
                     `
                     : ''}
             </uui-box>
